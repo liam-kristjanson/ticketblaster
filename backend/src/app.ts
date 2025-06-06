@@ -1,7 +1,11 @@
 import express from 'express';
-import * as ticketController from './controllers/ticketController';
+
 import * as db from "./db";
 import cors from "cors";
+import bodyParser = require('body-parser');
+
+import * as ticketController from './controllers/ticketController';
+import * as eventController from './controllers/eventController';
 
 db.connect();
 
@@ -15,6 +19,7 @@ const corsOptions = {
 console.log("Front origin: ", process.env.FRONT_ORIGIN);
 
 app.use(cors(corsOptions));
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
     res.send("Server is running...");
@@ -22,6 +27,10 @@ app.get("/", (req, res) => {
 
 app.get("/ticket/all", ticketController.getTickets);
 app.post("/ticket/scan", ticketController.scanTicket);
+app.post("/ticket", ticketController.createTicket);
+
+app.get("/event/all", eventController.getEvents);
+app.post("/event", eventController.createEvent);
 
 app.listen(PORT, () => {
     console.log("DB Connection string: ", process.env.DB_CONNECTION_STRING);

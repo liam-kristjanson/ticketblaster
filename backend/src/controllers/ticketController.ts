@@ -30,3 +30,26 @@ export async function scanTicket(req: Request, res: Response) {
         return;
     }
 }
+
+export async function createTicket(req: Request, res: Response) {
+    console.log(req.body);
+
+    if (!req.body) {
+        res.status(400).json({error: "Missing request body"})
+        return;
+    }
+
+    if (!req.body?.scanCode) {
+        res.status(400).json({error: "Scan code must be included in request body"});
+        return;
+    }
+
+    if (!req.body?.eventId) {
+        res.status(400).json({error: "eventId must be included in request body"});
+    }
+
+    const newTicket = new Ticket({scanCode: req.body.scanCode, isScanned: false, eventId: req.body.eventId});
+    await newTicket.save();
+
+    res.status(200).json({message: "Ticket created successfuly", ticket: newTicket});
+}
