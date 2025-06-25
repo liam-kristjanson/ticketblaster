@@ -106,6 +106,16 @@ export default function AdminDashboard() {
                             </tr>
                         ))}
                     </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <Link to="./create-event">
+                                    <Button>+ Create Event</Button>
+                                </Link>
+                            </td>
+                        </tr>
+                    </tfoot>
                 </Table>
 
                 <h3 className="text-primary">Tickets</h3>

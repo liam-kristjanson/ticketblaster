@@ -4,21 +4,21 @@ import Event from "../models/Event";
 export async function createEvent(req: Request, res: Response) {
 
     if (!req.body) {
-        res.status(401).json({error: "Missing request body"});
+        res.status(400).json({error: "Missing request body"});
         return;
     }
 
     if (!req.body.title || !req.body.eventLocation || !req.body.startTime) {
-        res.status(401).json({error: "Malformed request body"});
+        res.status(400).json({error: "Malformed request body"});
         return;
     }
 
     let title = req.body.title;
     let eventLocation = req.body.eventLocation
-    let startTime = new Date(req.body.startDate);
+    let startTime = new Date(req.body.startTime);
 
     if (isNaN(startTime.getTime())) {
-        res.status(401).json({error: "Invalid date format for startDate"});
+        res.status(400).json({error: "Invalid date format for startDate"});
         return;
     }
 
