@@ -1,7 +1,10 @@
 import { Link } from "react-router";
 import type { Route } from "./+types/home";
 import { useState } from "react";
-import { Spinner } from "react-bootstrap";
+import { Container, Nav, Navbar, Row, Spinner } from "react-bootstrap";
+import Icon from "@mdi/react";
+import { mdiTicket } from "@mdi/js";
+import HomeNavbar from "~/components/HomeNavbar";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -37,28 +40,13 @@ export default function Home() {
 
   return (
     <>
-      <h1 className="text-primary">Welcome to TicketBlaster!</h1> 
+      <HomeNavbar/>
 
-      <div className="d-flex justify-content-center">
-
-        <div className='w-50'>
-          {/* <Scanner allowMultiple scanDelay={1000} onScan={(result) => {processScan(result[0].rawValue)}}/> */}
-        </div>
-      </div>
-
-      {isProcessingScan && <Spinner/>}
-
-      <p>
-        Raw scan value: {scanCode}
-      </p>
-
-      {resMsg && 
-        <p>
-          Server response: {resMsg}
-        </p>
-      }
-
-      <Link to="/admin">Admin</Link>
+      <Container>
+        <Row>
+          <h1 className="text-primary">Welcome to TicketBlaster!</h1>
+        </Row>
+      </Container>
 
       
     </>

@@ -6,6 +6,7 @@ import bodyParser = require('body-parser');
 
 import * as ticketController from './controllers/ticketController';
 import * as eventController from './controllers/eventController';
+import * as authController from "./controllers/authController";
 
 db.connect();
 
@@ -24,6 +25,8 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => {
     res.send("Server is running...");
 });
+
+app.post("/auth/login", authController.login);
 
 app.get("/ticket/all", ticketController.getTickets);
 app.post("/ticket/scan", ticketController.scanTicket);
