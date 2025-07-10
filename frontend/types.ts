@@ -13,3 +13,10 @@ export interface TicketEvent {
 }
 
 export type MessageType = "success" | "danger";
+
+export interface User {
+    _id: string;
+    username: string;
+    password: string;
+    role: string;
+}

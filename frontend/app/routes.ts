@@ -9,5 +9,9 @@ export default [
         route("create-event", "./routes/admin/createEvent.tsx")
     ]),
 
-    route("/login", "./routes/auth/login.tsx"),  
+    route("/login", "./routes/auth/login.tsx"),
+    
+    route("/customer", "./layouts/customerLayout.tsx", [
+        index("./routes/customer/index.tsx")
+    ])
 ] satisfies RouteConfig;
