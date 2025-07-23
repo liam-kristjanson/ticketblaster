@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Card, Col, Container, Form, Modal, Row, Spinner } from "react-bootstrap";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import type { MessageType } from "types";
 import ServerMessageContainer from "~/components/ServerMessageContainer";
+import { AuthContext } from "~/context/authContext";
 
 export default function CreateEvent() {
 
@@ -18,6 +19,7 @@ export default function CreateEvent() {
 
     const [message, setMessage] = useState<string>("");
     const [msgType, setMsgType] = useState<MessageType>("success");
+    const user = useContext(AuthContext)?.user;
 
     function handleSubmit() {
         let isFormValid = true;
@@ -54,11 +56,12 @@ export default function CreateEvent() {
             setIsLoading(true);
             setMessage("");
 
-            fetch(import.meta.env.VITE_SERVER + "/event",
+            fetch(import.meta.env.VITE_SERVER + "/admin/event",
                 {
                     method: "POST",
                     headers: {
-                        "content-type": "application/json"
+                        "authorization": user.authToken,
+                        "content-type": "application/json",
                     },
                     body: JSON.stringify(eventObject)
                 }

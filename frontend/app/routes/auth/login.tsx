@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import HomeNavbar from "~/components/HomeNavbar";
 import ServerMessageContainer from "~/components/ServerMessageContainer";
+import { AuthContext } from "~/context/authContext";
 
 export default function Login() {
 
@@ -15,6 +16,8 @@ export default function Login() {
     const [passwordFeedback, setPasswordFeedback] = useState<string>("");
 
     const [msg, setMsg] = useState<string>("");
+
+    const {setUser, user} = useContext(AuthContext);
 
     function handleSubmit() {
         if (validateInput()) {
@@ -35,6 +38,9 @@ export default function Login() {
         .then(response => {
             response.json().then(responseJson => {
                 if (response.ok) {
+
+                    setUser(responseJson);
+
                     if (responseJson.role === "admin") {
                         navigate('/admin', {state: {user: responseJson}});
                     } else {

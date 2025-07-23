@@ -7,6 +7,7 @@ import bodyParser = require('body-parser');
 import * as ticketController from './controllers/ticketController';
 import * as eventController from './controllers/eventController';
 import * as authController from "./controllers/authController";
+import * as authMiddleware from "./middleware/authMiddleware";
 
 db.connect();
 
@@ -22,9 +23,16 @@ console.log("Front origin: ", process.env.FRONT_ORIGIN);
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
+//authentication middleware
+app.use(authMiddleware.verifyAuthToken);
+
+app.use("/admin/", authMiddleware.verifyAdminStatus)
+
 app.get("/", (req, res) => {
     res.send("Server is running...");
 });
+
+app.post("/admin/event", eventController.createEvent);
 
 app.post("/auth/login", authController.login);
 
@@ -33,7 +41,7 @@ app.post("/ticket/scan", ticketController.scanTicket);
 app.post("/ticket", ticketController.createTicket);
 
 app.get("/event/all", eventController.getEvents);
-app.post("/event", eventController.createEvent);
+
 
 app.listen(PORT, () => {
     console.log("DB Connection string: ", process.env.DB_CONNECTION_STRING);

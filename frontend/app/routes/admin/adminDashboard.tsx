@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Card, Container, Spinner, Table } from "react-bootstrap";
 import { Link } from "react-router";
 import type { Ticket, TicketEvent } from "types";
 import ServerMessageContainer from "~/components/ServerMessageContainer";
+import { AuthContext } from "~/context/authContext";
 
 export default function AdminDashboard() {
 
@@ -13,6 +14,8 @@ export default function AdminDashboard() {
     const [events, setEvents] = useState<TicketEvent[]>([]);
     const [isEventsLoading, setIsEventsLoading] = useState<boolean>(false);
     const [eventFetchErr, setEventFetchErr] = useState<string>("");
+
+    const {user} = useContext(AuthContext);
 
     //fetch tickets
     useEffect(() => {
@@ -184,7 +187,7 @@ export default function AdminDashboard() {
                         </tr>
                     </tfoot>
                 </Table>
-            </Container>    
+            </Container>
         </>
     )
 }

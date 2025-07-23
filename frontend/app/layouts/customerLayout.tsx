@@ -1,12 +1,15 @@
 import { mdiTicket } from "@mdi/js";
 import Icon from "@mdi/react";
-import { Nav, Navbar } from "react-bootstrap";
-import { Outlet, useLocation } from "react-router";
+import { useContext } from "react";
+import { Button, Nav, Navbar } from "react-bootstrap";
+import { Link, Navigate, Outlet, useLocation } from "react-router";
 import { AuthContext } from "~/context/authContext";
 
 export default function AdminLayout() {
 
-    const { user } = useLocation().state;
+    const { user, setUser } = useContext(AuthContext);
+
+    if (!user) return <Navigate to="/login"/>
 
     return (
         <>
@@ -23,10 +26,7 @@ export default function AdminLayout() {
                 </Navbar.Collapse>
 
                 <Navbar.Collapse className="justify-content-end">
-                    <Navbar.Text>Logged in as: {user.username}</Navbar.Text>
-                    <Nav>
-                        <Nav.Link href="#">Log out</Nav.Link>
-                    </Nav>
+                    <Navbar.Text>Logged in as: {user.username} <Link to="/"><Button size="sm" variant="secondary" onClick={() => setUser(null)}>Log out</Button></Link></Navbar.Text>
                 </Navbar.Collapse>
             </Navbar>
 
@@ -34,9 +34,7 @@ export default function AdminLayout() {
 
             </div>
 
-            <AuthContext value={user}>
-                <Outlet/>
-            </AuthContext>
+            <Outlet/>
         </>
     )
 }
