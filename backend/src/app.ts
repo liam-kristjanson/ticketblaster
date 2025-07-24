@@ -23,24 +23,30 @@ console.log("Front origin: ", process.env.FRONT_ORIGIN);
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
-//authentication middleware
-app.use(authMiddleware.verifyAuthToken);
 
-app.use("/admin/", authMiddleware.verifyAdminStatus)
-
+/////////////////////////
+//UNAUTHENTICATED ROUTES
+/////////////////////////
 app.get("/", (req, res) => {
     res.send("Server is running...");
 });
-
-app.post("/admin/event", eventController.createEvent);
-
 app.post("/auth/login", authController.login);
+
+//////////////////////////////
+//AUTHENTICATED ROUTES
+/////////////////////////////
+app.use(authMiddleware.verifyAuthToken);
+
+app.use("/admin/", authMiddleware.verifyAdminStatus);
 
 app.get("/ticket/all", ticketController.getTickets);
 app.post("/ticket/scan", ticketController.scanTicket);
 app.post("/ticket", ticketController.createTicket);
 
 app.get("/event/all", eventController.getEvents);
+app.delete("/event", eventController.deleteEvent);
+
+app.post("/admin/event", eventController.createEvent);
 
 
 app.listen(PORT, () => {

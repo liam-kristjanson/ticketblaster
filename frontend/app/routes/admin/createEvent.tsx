@@ -19,7 +19,7 @@ export default function CreateEvent() {
 
     const [message, setMessage] = useState<string>("");
     const [msgType, setMsgType] = useState<MessageType>("success");
-    const user = useContext(AuthContext)?.user;
+    const user = useContext(AuthContext).user;
 
     function handleSubmit() {
         let isFormValid = true;
@@ -60,7 +60,7 @@ export default function CreateEvent() {
                 {
                     method: "POST",
                     headers: {
-                        "authorization": user.authToken,
+                        "authorization": user?.authToken ?? "",
                         "content-type": "application/json",
                     },
                     body: JSON.stringify(eventObject)

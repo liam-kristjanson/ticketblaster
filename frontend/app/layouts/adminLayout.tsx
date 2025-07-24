@@ -11,7 +11,7 @@ export default function userLayout() {
 
     return (
         <>
-            <Navbar className="bg-body-tertiary">
+            <Navbar className="bg-body-secondary">
                 <Navbar.Brand className="ms-3">
                     Ticketblaster Admin
                 </Navbar.Brand>
@@ -24,20 +24,20 @@ export default function userLayout() {
             </Navbar>
 
         
-            <Container fluid className="border border-primary vh-100">
-                <Row className="vh-100">
-                    <Col xs={2} className="border border-danger h-100">
+            <Container fluid className="">
+                <Row className="h-100">
+                    <Col xs={2} className="vh-100 bg-body-tertiary">
                         <Stack gap={2}>
+                            <div className="p-3">
+                                Events
+                            </div>
+
                             <div className="p-3">
                                 Tickets
                             </div>
 
                             <div className="p-3">
-                                Item 2
-                            </div>
-
-                            <div className="p-3">
-                                Item 3
+                                Users
                             </div>
                         </Stack>
                     </Col>

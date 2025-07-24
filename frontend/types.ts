@@ -12,7 +12,7 @@ export interface TicketEvent {
     startTime: Date;
 }
 
-export type MessageType = "success" | "danger";
+export type MessageType = "success" | "danger" | "info";
 
 export interface User {
     _id: string;
