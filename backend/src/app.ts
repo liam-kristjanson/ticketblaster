@@ -42,6 +42,7 @@ app.use("/admin/", authMiddleware.verifyAdminStatus);
 app.get("/ticket/all", ticketController.getTickets);
 app.post("/ticket/scan", ticketController.scanTicket);
 app.post("/ticket", ticketController.createTicket);
+app.delete("/ticket", ticketController.deleteTicket);
 
 app.get("/event/all", eventController.getEvents);
 app.delete("/event", eventController.deleteEvent);

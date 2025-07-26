@@ -53,3 +53,24 @@ export async function createTicket(req: Request, res: Response) {
 
     res.status(200).json({message: "Ticket created successfuly", ticket: newTicket});
 }
+
+export async function deleteTicket(req: Request, res: Response) {
+
+    if (!req.user || req.user.role !== "admin") {
+        res.status(401).json({error: "401: Unauthorized"});
+        return;
+    }
+
+    if (!req.query.ticketId) {
+        res.status(400).json({error: "ticketId must be specified in querystring"});
+        return;
+    }
+
+    const result = await Ticket.deleteOne({_id: req.query.ticketId}).exec();
+
+    if (result.deletedCount >= 1) {
+        res.status(200).json({message: "Ticket deleted successfuly"});
+    } else {
+        res.status(404).json({error: "Ticket with specified id not found"});
+    }
+}

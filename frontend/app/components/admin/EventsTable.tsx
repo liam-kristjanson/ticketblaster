@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Button, Spinner, Table } from "react-bootstrap";
 import { Link } from "react-router";
 import { type MessageType, type TicketEvent } from "types";
 import ServerMessageContainer from "../ServerMessageContainer";
@@ -14,12 +14,10 @@ export default function EventsTable() {
     const [events, setEvents] = useState<TicketEvent[]>([]);
     const [serverMsg, setServerMsg] = useState<string>("");
     const [msgType, setMsgType] = useState<MessageType>("info");
-
+    const [refreshes, setRefreshes] = useState<number>(0);
 
     useEffect(() => {
         setIsLoading(true);
-        setServerMsg("");
-
 
         fetch(import.meta.env.VITE_SERVER + "/event/all")
         .then(response => {
@@ -38,7 +36,7 @@ export default function EventsTable() {
             setMsgType("danger")
             console.error(err);
         })
-    }, [events]);
+    }, [refreshes]);
 
     function deleteEvent(event : TicketEvent) {
 
@@ -61,7 +59,7 @@ export default function EventsTable() {
                     if (response.ok) {
                         setServerMsg(responseJson.message ?? "Success")
                         setMsgType("success");
-                        setEvents([]);
+                        setRefreshes(refreshes + 1);
                     } else {
                         setServerMsg(responseJson.error ?? "An unexpected error occured while deleting event (see console)");
                         console.error(responseJson);
@@ -106,7 +104,12 @@ export default function EventsTable() {
                 </thead>
 
                 <tbody>
-                    {events.map(event => (
+                    {isLoading ? (
+                        <tr>
+                            <td colSpan={100}><Spinner/> Loading events...</td>
+                        </tr>
+                    ) : (
+                        events.map(event => (
                         <tr key={event._id}>
                             <td>
                                 {event.title}
@@ -128,7 +131,8 @@ export default function EventsTable() {
                                 <Button variant="danger" onClick={() => {deleteEvent(event)}}>Delete</Button>
                             </td>
                         </tr>
-                    ))}
+                    ))
+                    )}
                 </tbody>
 
                 <tfoot>

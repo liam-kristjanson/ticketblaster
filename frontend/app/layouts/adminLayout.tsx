@@ -27,18 +27,25 @@ export default function userLayout() {
             <Container fluid className="">
                 <Row className="h-100">
                     <Col xs={2} className="vh-100 bg-body-tertiary">
-                        <Stack gap={2}>
-                            <div className="p-3">
+                        <Stack gap={2} className="py-3">
+
+                            <Link to="/admin/events">
+                            <div className="p-3 shadow-sm bg-primary rounded text-white">
                                 Events
                             </div>
+                            </Link>
 
-                            <div className="p-3">
+                            <Link to="/admin/events">
+                            <div className="p-3 border border-primary rounded" style={{textDecoration: "none"}}>
                                 Tickets
                             </div>
+                            </Link>
 
-                            <div className="p-3">
+                            <Link to="/admin/users">
+                            <div className="p-3 border border-primary rounded">
                                 Users
                             </div>
+                            </Link>
                         </Stack>
                     </Col>
 
