@@ -1,9 +1,6 @@
-import { Link } from "react-router";
 import type { Route } from "./+types/home";
 import { useState } from "react";
-import { Container, Nav, Navbar, Row, Spinner } from "react-bootstrap";
-import Icon from "@mdi/react";
-import { mdiTicket } from "@mdi/js";
+import { Container, Row } from "react-bootstrap";
 import HomeNavbar from "~/components/HomeNavbar";
 
 export function meta({}: Route.MetaArgs) {

@@ -1,5 +1,3 @@
-import { mdiTicket } from "@mdi/js";
-import Icon from "@mdi/react";
 import { Nav, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router";
 
@@ -8,7 +6,7 @@ export default function HomeNavbar() {
         <>
             <Navbar className="bg-body-tertiary px-4" expand="md">
                 <Navbar.Brand href="/" className="text-primary">
-                    <Icon path={mdiTicket} size={1.2} className="d-inline-block align-top"/>TicketBlaster
+                    TicketBlaster
                 </Navbar.Brand>
 
                 <Navbar.Collapse id="basic-navbar-nav">

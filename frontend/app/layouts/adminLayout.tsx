@@ -7,7 +7,7 @@ export default function userLayout() {
 
     const {user, setUser} = useContext(AuthContext)
 
-    if (!user) return <Navigate to="/login"/>
+    // if (!user) return <Navigate to="/login"/>
 
     return (
         <>
@@ -18,7 +18,7 @@ export default function userLayout() {
 
                 <Navbar.Collapse className="d-flex justify-content-end gap-2">
                     <Navbar.Text>
-                        Signed in as: {user.username} <Link to="/"><Button size="sm" variant="secondary" onClick={() => {setUser(null)}}>Sign out</Button></Link>
+                        Signed in as: {user?.username} <Link to="/"><Button size="sm" variant="secondary" onClick={() => {setUser(null)}}>Sign out</Button></Link>
                     </Navbar.Text>
                 </Navbar.Collapse>
             </Navbar>
@@ -36,7 +36,7 @@ export default function userLayout() {
                             </Link>
 
                             <Link to="/admin/events">
-                            <div className="p-3 border border-primary rounded" style={{textDecoration: "none"}}>
+                            <div className="p-3 border border-primary rounded">
                                 Tickets
                             </div>
                             </Link>

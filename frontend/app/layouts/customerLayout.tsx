@@ -1,5 +1,3 @@
-import { mdiTicket } from "@mdi/js";
-import Icon from "@mdi/react";
 import { useContext } from "react";
 import { Button, Nav, Navbar } from "react-bootstrap";
 import { Link, Navigate, Outlet, useLocation } from "react-router";
@@ -15,7 +13,7 @@ export default function AdminLayout() {
         <>
             <Navbar fixed="top" className="bg-body-tertiary px-2" expand="md">
                 <Navbar.Brand href="/customer" className="text-primary">
-                    <Icon path={mdiTicket} size={1.2} className="d-inline-block align-top"/> TicketBlaster
+                    TicketBlaster
                 </Navbar.Brand>
 
                 <Navbar.Collapse id="basic-navbar-nav">
