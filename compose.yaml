@@ -1,0 +1,35 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "8000:80"
+    networks:
+      - ticketblaster-net
+
+  backend:
+    build: ./backend
+    environment:
+      - DB_CONNECTION_STRING=mongodb://database:27017/
+      - JWT_SECRET=secret
+      - FRONT_ORIGIN=http://frontend
+    depends_on:
+      - database
+    networks:
+      - ticketblaster-net
+  
+  database:
+    image: mongo:8
+    volumes:
+      - ./database/init.js:/docker-entrypoint-initdb.d/init.js
+      - mongo-data:/data/db
+    networks:
+      - ticketblaster-net
+
+volumes:
+  mongo-data:
+
+networks:
+  ticketblaster-net:
+
+
+  

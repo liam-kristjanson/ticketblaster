@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Button, Col, Container, Navbar, Row, Stack } from "react-bootstrap";
-import { Link, Navigate, Outlet, useLocation } from "react-router"
+import { Link, Navigate, NavLink, Outlet, useLocation } from "react-router"
 import { AuthContext } from "~/context/authContext";
 
 export default function userLayout() {
@@ -12,7 +12,7 @@ export default function userLayout() {
     return (
         <>
             <Navbar className="bg-body-secondary">
-                <Navbar.Brand className="ms-3">
+                <Navbar.Brand className="ms-3" href="/admin">
                     Ticketblaster Admin
                 </Navbar.Brand>
 
@@ -24,32 +24,26 @@ export default function userLayout() {
             </Navbar>
 
         
-            <Container fluid className="">
-                <Row className="h-100">
+            <Container fluid>
+                <Row className="bg-body-tertiary">
                     <Col xs={2} className="vh-100 bg-body-tertiary">
                         <Stack gap={2} className="py-3">
 
-                            <Link to="/admin/events">
-                            <div className="p-3 shadow-sm bg-primary rounded text-white">
-                                Events
-                            </div>
-                            </Link>
+                            <NavLink to="/admin/create-event">
+                                <Button variant="outline-primary" className="w-100 btn-lg text-start">Events</Button>
+                            </NavLink>
 
-                            <Link to="/admin/events">
-                            <div className="p-3 border border-primary rounded">
-                                Tickets
-                            </div>
-                            </Link>
+                            <NavLink to="/admin/create-tickets">
+                                <Button variant="outline-primary" className="w-100 btn-lg text-start">Tickets</Button>
+                            </NavLink>
 
-                            <Link to="/admin/users">
-                            <div className="p-3 border border-primary rounded">
-                                Users
-                            </div>
-                            </Link>
+                            <NavLink to="/admin/users">
+                                <Button variant="outline-primary" className="w-100 btn-lg text-start">Users</Button>
+                            </NavLink>
                         </Stack>
                     </Col>
 
-                    <Col>
+                    <Col className="bg-body">
                         <Outlet/>
                     </Col>
                 </Row>

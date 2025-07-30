@@ -21,6 +21,12 @@ const corsOptions = {
 console.log("Front origin: ", process.env.FRONT_ORIGIN);
 
 app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+    console.log("Request recieved at " + req.path);
+    next();
+})
+
 app.use(bodyParser.json());
 
 
