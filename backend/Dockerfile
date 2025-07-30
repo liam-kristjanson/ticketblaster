@@ -1,6 +1,5 @@
 FROM node:20-alpine AS build-env
 
-ENV PORT=80
 COPY ./ /app/
 WORKDIR /app
 RUN npm ci

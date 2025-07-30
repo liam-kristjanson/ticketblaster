@@ -1,8 +1,6 @@
 services:
   frontend:
     build: ./frontend
-    ports:
-      - "8000:80"
     networks:
       - ticketblaster-net
 
@@ -25,6 +23,16 @@ services:
     networks:
       - ticketblaster-net
 
+  proxy:
+    build: ./proxy
+    ports: 
+      - 8000:80
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - ticketblaster-net
+    
 volumes:
   mongo-data:
 
