@@ -24,24 +24,28 @@
 #SPA Containerization
 
 #Build application
-FROM node:20-alpine AS build-env
-COPY . /app/
-WORKDIR /app
+FROM node:22-alpine AS base
+COPY . /usr/local/app
+WORKDIR /usr/local/app
 RUN npm ci
-RUN npm run build
 
+FROM base AS dev-client
+CMD ["npm", "run", "dev"]
 
-FROM nginx:alpine
+# FROM base AS build-env
+# RUN npm run build
 
-# Remove default nginx configuration
-RUN rm /etc/nginx/conf.d/default.conf
+# FROM nginx:alpine AS production-build
 
-# Add nginx configuration file
-COPY nginx.conf /etc/nginx/conf.d
+# # Remove default nginx configuration
+# RUN rm /etc/nginx/conf.d/default.conf
 
-#Copy built application into nginx share folder
-COPY --from=build-env /app/build/client /usr/share/nginx/html
+# # Add nginx configuration file
+# COPY nginx.conf /etc/nginx/conf.d
 
-EXPOSE 80
+# #Copy built application into nginx share folder
+# COPY --from=build-env /app/build/client /usr/share/nginx/html
 
-CMD ["nginx", "-g", "daemon off;"]
+# EXPOSE 80
+
+# CMD ["nginx", "-g", "daemon off;"]
