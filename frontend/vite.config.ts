@@ -8,5 +8,8 @@ export default defineConfig({
   server: {
     host: true,
     allowedHosts: ['frontend']
+  },
+  optimizeDeps: {
+    include: ['react-bootstrap']
   }
 });

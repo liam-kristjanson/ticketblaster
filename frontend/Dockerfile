@@ -29,23 +29,24 @@ COPY . /usr/local/app
 WORKDIR /usr/local/app
 RUN npm ci
 
-FROM base AS dev-client
+FROM base AS dev
+EXPOSE 5173
 CMD ["npm", "run", "dev"]
 
-# FROM base AS build-env
-# RUN npm run build
+FROM base AS build-env
+RUN npm run build
 
-# FROM nginx:alpine AS production-build
+FROM nginx:alpine AS production-build
 
-# # Remove default nginx configuration
-# RUN rm /etc/nginx/conf.d/default.conf
+# Remove default nginx configuration
+RUN rm /etc/nginx/conf.d/default.conf
 
-# # Add nginx configuration file
-# COPY nginx.conf /etc/nginx/conf.d
+# Add nginx configuration file
+COPY nginx.conf /etc/nginx/conf.d
 
-# #Copy built application into nginx share folder
-# COPY --from=build-env /app/build/client /usr/share/nginx/html
+#Copy built application into nginx share folder
+COPY --from=build-env /app/build/client /usr/share/nginx/html
 
-# EXPOSE 80
+EXPOSE 80
 
-# CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]

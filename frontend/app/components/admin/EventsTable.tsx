@@ -112,7 +112,9 @@ export default function EventsTable() {
                         events.map(event => (
                         <tr key={event._id}>
                             <td>
-                                {event.title}
+                                <Link to="./event" state={event}>
+                                    {event.title}
+                                </Link>
                             </td>
 
                             <td>

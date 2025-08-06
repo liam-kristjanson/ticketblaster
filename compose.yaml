@@ -2,7 +2,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      target: dev-client
+      target: dev
     develop:
       watch:
         - path: ./frontend
@@ -19,6 +19,10 @@ services:
       - DB_CONNECTION_STRING=mongodb://database:27017/
       - JWT_SECRET=secret
       - FRONT_ORIGIN=http://frontend
+    develop:
+      watch:
+        - path: ./backend
+          action: rebuild
     depends_on:
       - database
     networks:

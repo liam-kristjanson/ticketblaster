@@ -6,7 +6,8 @@ export default [
     route("/admin", "./layouts/adminLayout.tsx", [
         index("./routes/admin/adminDashboard.tsx"),
         route("create-tickets", "./routes/admin/createTickets.tsx"),
-        route("create-event", "./routes/admin/createEvent.tsx")
+        route("create-event", "./routes/admin/createEvent.tsx"),
+        route("event", "./routes/admin/event.tsx")
     ]),
 
     route("/login", "./routes/auth/login.tsx"),

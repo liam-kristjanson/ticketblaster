@@ -20,7 +20,7 @@ export default function AdminDashboard() {
                 <h3 className="text-primary">Tickets</h3>
                 <TicketsTable/>
 
-                {import.meta.env.DEV && <Button onClick={() => {navigator.clipboard.writeText(user?.authToken ?? "")}}>Copy AuthToken</Button>}
+                <Button onClick={() => {navigator.clipboard.writeText(user?.authToken ?? "")}}>Copy AuthToken</Button>
             </Container>
         </>
     )
