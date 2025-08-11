@@ -22,7 +22,12 @@ export default function TicketsTable() {
 
         setIsTicketsLoading(true);
 
-        fetch(import.meta.env.VITE_SERVER + "/ticket/all")
+        fetch(import.meta.env.VITE_SERVER + "/admin/tickets", {
+            method: "GET",
+            headers: {
+                Authorization: user.authToken
+            }
+        })
         .then(response => {
             setIsTicketsLoading(false);
             response.json().then(responseJson => {

@@ -13,6 +13,7 @@ export default [
     route("/login", "./routes/auth/login.tsx"),
     
     route("/customer", "./layouts/customerLayout.tsx", [
-        index("./routes/customer/index.tsx")
+        index("./routes/customer/index.tsx"),
+        route("event", "./routes/customer/event.tsx")
     ])
 ] satisfies RouteConfig;

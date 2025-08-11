@@ -13,4 +13,6 @@ export interface UserPayload extends User {
     authToken : string | undefined;
 }
 
+export type TicketStatus = "available" | "sold" | "hold";
+
 export type UserRole = "customer" | "admin"

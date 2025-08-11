@@ -8,6 +8,7 @@ import {
 } from "react-router";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles.css'
 
 import type { Route } from "./+types/root";
 import { AuthProvider } from "./context/authContext";

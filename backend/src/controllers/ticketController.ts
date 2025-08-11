@@ -1,12 +1,30 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import Ticket from "../models/Ticket";
 import Event from "../models/Event";
 import { ObjectId } from "mongodb";
 
-export async function getTickets(req: Request, res: Response) {
+export async function getAdminTickets(req: Request, res: Response) {
+
     const tickets = await Ticket.find();
 
     res.json(tickets);
+}
+
+export async function getCustomerTickets(req: Request, res: Response) {
+    //validate event id
+    if (typeof req.query.eventId != 'string') {
+        res.status(400).json({error: "eventId must be a string defined in querystring"});
+        return;
+    }
+
+    if (!ObjectId.isValid(req.query.eventId)) {
+        res.status(400).json({error: "Invalid eventId"});
+        return;
+    }
+
+    const matchedTickets = await Ticket.find({eventId: new ObjectId(req.query.eventId)});
+
+    res.status(200).json(matchedTickets);
 }
 
 export async function scanTicket(req: Request, res: Response) {
@@ -103,7 +121,14 @@ export async function createEventTickets(req: Request, res: Response) {
     let ticketPromiseArr = []
 
     for (let i = 0; i<parseInt(req.query.count); i++) {
-        let newTicket = new Ticket({scanCode: 123, eventId: new ObjectId(req.query.eventId), isScanned: false})
+        let newTicket = new Ticket(
+            {
+                scanCode: 123, 
+                eventId: new ObjectId(req.query.eventId),
+                isScanned: false,
+                status: "available"
+            }
+        )
 
         ticketPromiseArr.push(newTicket.save());
     }
