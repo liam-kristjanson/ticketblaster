@@ -4,17 +4,19 @@ import { TicketStatus } from "../types";
 interface Ticket extends Document {
     scanCode: string;
     isScanned: boolean;
-    eventId: string;
+    event: String;
     status: TicketStatus;
-    ownerId: string;
+    owner: String;
+    price: string;
 }
 
 const ticketSchema = new Schema<Ticket>({
     scanCode: {type: String, required: true},
     isScanned: {type: Boolean, required: true},
-    eventId: {type: String, required: true},
+    event: {type: Schema.Types.ObjectId, required: true, ref: 'Event'},
     status: {type: String, enum: ["available", "sold", "hold"], required: true},
-    ownerId: {type: String, required: false}    
+    owner: {type: Schema.Types.ObjectId, required: false, ref: 'User'},
+    price: {type: String, required: false} 
 });
 
 const Ticket = mongoose.model<Ticket>('Ticket', ticketSchema);

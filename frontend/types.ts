@@ -2,7 +2,9 @@ export interface Ticket {
     _id: string;
     scanCode: string;
     isScanned: boolean;
-    eventId: string;
+    event?: TicketEvent;
+    status: TicketStatus;
+    price?: string;
 }
 
 export interface TicketEvent {
@@ -13,6 +15,8 @@ export interface TicketEvent {
 }
 
 export type MessageType = "success" | "danger" | "info";
+
+export type TicketStatus = "available" | "hold" | "sold";
 
 export interface User {
     _id: string;

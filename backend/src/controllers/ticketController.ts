@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 
 export async function getAdminTickets(req: Request, res: Response) {
 
-    const tickets = await Ticket.find();
+    const tickets = await Ticket.find().populate('event').exec();
 
     res.json(tickets);
 }
@@ -22,7 +22,7 @@ export async function getCustomerTickets(req: Request, res: Response) {
         return;
     }
 
-    const matchedTickets = await Ticket.find({eventId: new ObjectId(req.query.eventId)});
+    const matchedTickets = await Ticket.find({event: req.query.eventId}).populate('event').exec();
 
     res.status(200).json(matchedTickets);
 }
@@ -49,29 +49,6 @@ export async function scanTicket(req: Request, res: Response) {
         res.status(403).json({error: "Ticket has already been scanned."});
         return;
     }
-}
-
-export async function createTicket(req: Request, res: Response) {
-    console.log(req.body);
-
-    if (!req.body) {
-        res.status(400).json({error: "Missing request body"})
-        return;
-    }
-
-    if (!req.body?.scanCode) {
-        res.status(400).json({error: "Scan code must be included in request body"});
-        return;
-    }
-
-    if (!req.body?.eventId) {
-        res.status(400).json({error: "eventId must be included in request body"});
-    }
-
-    const newTicket = new Ticket({scanCode: req.body.scanCode, isScanned: false, eventId: req.body.eventId});
-    await newTicket.save();
-
-    res.status(200).json({message: "Ticket created successfuly", ticket: newTicket});
 }
 
 export async function deleteTicket(req: Request, res: Response) {
@@ -124,9 +101,10 @@ export async function createEventTickets(req: Request, res: Response) {
         let newTicket = new Ticket(
             {
                 scanCode: 123, 
-                eventId: new ObjectId(req.query.eventId),
+                event: req.query.eventId,
                 isScanned: false,
-                status: "available"
+                status: "available",
+                price: "$1"    
             }
         )
 

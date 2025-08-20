@@ -90,7 +90,7 @@ export default function TicketsTable() {
                         </th>
 
                         <th>
-                            Event Id
+                            Event Title
                         </th>
 
                         <th>
@@ -117,7 +117,7 @@ export default function TicketsTable() {
                             </td>
 
                             <td>
-                                {ticket.eventId}
+                                {ticket.event?.title ?? "N/A"}
                             </td>
 
                             <td>
