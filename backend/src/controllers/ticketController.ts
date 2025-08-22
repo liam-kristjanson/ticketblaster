@@ -2,6 +2,7 @@ import { Request, response, Response } from "express";
 import Ticket from "../models/Ticket";
 import Event from "../models/Event";
 import { ObjectId } from "mongodb";
+import * as z from 'zod';
 
 export async function getAdminTickets(req: Request, res: Response) {
 
@@ -114,4 +115,69 @@ export async function createEventTickets(req: Request, res: Response) {
     const allTicketsCreated = await Promise.all(ticketPromiseArr);
 
     res.status(200).json({message: "All tickets created successfuly"});
+}
+
+export async function purchaseTicket(req: Request, res: Response) {
+
+    if (!req.user?.id) {
+        res.status(401).json({error: "401: Unauthorized"});
+        return;
+    }
+
+    const PurchaseValidation = z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        email: z.email(),
+        phone: z.string(),
+
+        cardName: z.string(),
+        cardNumber: z.string(),
+        expiry: z.string(),
+
+        ticketId: z.string()
+    });
+
+    const validationResult = PurchaseValidation.safeParse(req.body);
+
+    if (!validationResult.success) {
+        console.log(validationResult.error.issues);
+        res.status(400).json({error: "Malformed request body"});
+        return;
+    }
+
+    const purchaseRequest = validationResult.data;
+
+    if (!ObjectId.isValid(purchaseRequest.ticketId)) {
+        res.status(400).json({error: "Invalid ticketId"});
+        return;
+    }
+
+    const matchedTicket = await Ticket.findById(purchaseRequest.ticketId);
+
+    if (!matchedTicket) {
+        res.status(404).json({error: "Requested ticket not found"});
+        return;
+    }
+
+    if (matchedTicket.status == "sold") {
+        res.status(400).json({error: "Requested ticket has been sold"});
+        return;
+    }
+
+    matchedTicket.status = "sold"
+    matchedTicket.owner = req.user.id;
+
+    await matchedTicket.save();
+
+    res.status(200).json({message: "Ticket purchased successfuly"});
+}
+
+export async function getMyTickets(req: Request, res: Response) {
+    if (!req.user?.id) {
+        res.status(401).json({error: "401: Unauthorized"});
+    }
+
+    const matchedTickets = await Ticket.find({owner: req.user.id});
+
+    res.status(200).json(matchedTickets);
 }

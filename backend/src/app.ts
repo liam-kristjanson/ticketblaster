@@ -46,6 +46,9 @@ app.use(authMiddleware.verifyAuthToken);
 app.use("/admin/", authMiddleware.verifyAdminStatus);
 
 app.get("/customer/tickets", ticketController.getCustomerTickets);
+app.post("/customer/purchase-ticket", ticketController.purchaseTicket);
+app.get("/customer/my-tickets", ticketController.getMyTickets);
+
 app.get("/admin/tickets", ticketController.getAdminTickets);
 
 app.post("/ticket/scan", ticketController.scanTicket);
