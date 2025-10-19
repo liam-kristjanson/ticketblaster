@@ -2,7 +2,7 @@ export interface Ticket {
     _id: string;
     scanCode: string;
     isScanned: boolean;
-    event?: TicketEvent;
+    event: TicketEvent;
     status: TicketStatus;
     price?: string;
 }

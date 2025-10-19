@@ -1,18 +1,22 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Card, Carousel, Col, Container, Image, Row, Stack } from "react-bootstrap";
+import { Button, Card, Carousel, Col, Container, Image, Row, Spinner, Stack } from "react-bootstrap";
 import { Link, NavLink, useNavigate } from "react-router";
-import { type TicketEvent } from "types";
+import { type Ticket, type TicketEvent } from "types";
 import TicketCard from "~/components/customer/TicketCard";
 import { AuthContext } from "~/context/authContext"
 
 export default function CustomerIndex() {
     
-    const user = useContext(AuthContext);
+    const {user} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const [events, setEvents] = useState<TicketEvent[]>([]);
     const [eventsLoading, setEventsLoading] = useState<boolean>(false);
     const [eventFetchErr, setEventFetchErr] = useState<string>("");
+
+    const [ticketsLoading, setTicketsLoading] = useState<boolean>(false);
+    const [tickets, setTickets] = useState<Ticket[]>([]);
+    const [ticketsFetchErr, setTicketsFetchErr] = useState<string>("");
 
     useEffect(() => {
         setEventsLoading(true);
@@ -35,6 +39,35 @@ export default function CustomerIndex() {
             setEventFetchErr("An unexpected error occured while fetching events (see console)");
             console.error(err);
         })
+    }, []);
+
+    useEffect(() => {
+        setTicketsLoading(true);
+
+        fetch(import.meta.env.VITE_SERVER + "/customer/my-tickets", {
+            method: "GET",
+            headers: {
+                authorization: user?.authToken ?? ""
+            }
+        })
+        .then(response => {
+            response.json().then(responseJson => {
+                setTicketsLoading(false);
+                if (response.ok) {
+                    console.log("MY tickets: ")
+                    console.log(responseJson)
+                    setTickets(responseJson);
+                } else {
+                    console.error(responseJson)
+                    setTicketsFetchErr(responseJson.error ?? "An error occured while fetching tickets")
+                }
+            })
+        })
+        .catch(err => {
+            setTicketsLoading(false);
+            console.error(err);
+            setTicketsFetchErr("An error occured while fetching tickets");
+        });
     }, [])
     
     return (
@@ -47,21 +80,28 @@ export default function CustomerIndex() {
                 </Row>
 
                 <Row className="mb-3">
-                    <Col xl={3}>
-                        <TicketCard/>
-                    </Col>
+                    {ticketsLoading ? (
+                        <>
+                            <Spinner/> Tickets loading...
+                        </>
+                    ) : (
+                        <>
+                            {tickets.length > 0 ? (
+                                <>
+                                    {tickets.map(ticket => (
+                                        <Col xl={3}>
+                                            <TicketCard ticket={ticket}/>
+                                        </Col>
+                                    ))}
+                                </>
+                            ) : (
+                                <>
+                                    You don't have any tickets!
+                                </>
+                            )}
+                        </>
+                    )}
 
-                    <Col xl={3}>
-                        <TicketCard/>
-                    </Col>
-
-                    <Col xl={3}>
-                        <TicketCard/>
-                    </Col>
-
-                    <Col xl={3}>
-                        <TicketCard/>
-                    </Col>
 
                 </Row>
 

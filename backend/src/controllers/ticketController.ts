@@ -177,7 +177,7 @@ export async function getMyTickets(req: Request, res: Response) {
         res.status(401).json({error: "401: Unauthorized"});
     }
 
-    const matchedTickets = await Ticket.find({owner: req.user.id});
+    const matchedTickets = await Ticket.find({owner: req.user.id}).populate('event').exec();
 
     res.status(200).json(matchedTickets);
 }
