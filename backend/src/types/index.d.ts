@@ -15,4 +15,4 @@ export interface UserPayload extends User {
 
 export type TicketStatus = "available" | "sold" | "hold";
 
-export type UserRole = "customer" | "admin"
+export type UserRole = "customer" | "admin" | "host"

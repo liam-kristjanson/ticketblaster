@@ -15,5 +15,10 @@ db.users.insertMany([
         username: "customer",
         password: "Testuser123!",
         role: "customer"
+    },
+    {
+        username: "host",
+        password: "Testuser123!",
+        role: "host"
     }
 ])

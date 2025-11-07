@@ -43,6 +43,8 @@ export default function Login() {
 
                     if (responseJson.role === "admin") {
                         navigate('/admin', {state: {user: responseJson}});
+                    } else if (responseJson.role === "host") {
+                        navigate('/host', {state: {user: responseJson}});
                     } else {
                         navigate('/customer', {state: {user: responseJson}});
                     }

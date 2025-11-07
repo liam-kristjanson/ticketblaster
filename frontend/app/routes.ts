@@ -16,5 +16,9 @@ export default [
         index("./routes/customer/index.tsx"),
         route("event", "./routes/customer/event.tsx"),
         route("checkout", "./routes/customer/checkout.tsx")
+    ]),
+
+    route("/host", "./layouts/hostLayout.tsx", [
+        index("./routes/host/index.tsx")
     ])
 ] satisfies RouteConfig;
