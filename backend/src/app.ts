@@ -8,6 +8,7 @@ import * as ticketController from './controllers/ticketController';
 import * as eventController from './controllers/eventController';
 import * as authController from "./controllers/authController";
 import * as authMiddleware from "./middleware/authMiddleware";
+import * as venueController from "./controllers/venueController";
 
 db.connect();
 
@@ -60,6 +61,9 @@ app.delete("/event", eventController.deleteEvent);
 
 app.post("/admin/event", eventController.createEvent);
 
+app.get("/my-venues", venueController.getMyVenues);
+app.post("/venue", venueController.createVenue);
+app.delete("/venue", venueController.deleteVenue);
 
 app.listen(PORT, () => {
     console.log("DB Connection string: ", process.env.DB_CONNECTION_STRING);

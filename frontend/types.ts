@@ -19,9 +19,19 @@ export type MessageType = "success" | "danger" | "info";
 export type TicketStatus = "available" | "hold" | "sold";
 
 export interface User {
-    _id: string;
+    id: string;
     username: string;
     password: string;
     role: string;
     authToken: string;
 }
+
+export interface Venue {
+    name: string;
+    address: string;
+    capacity: number;
+    owner?: User;
+    _id: string;
+}
+
+export type ServerMessage = [message: string, type: MessageType]

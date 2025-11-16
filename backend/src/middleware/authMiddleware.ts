@@ -10,7 +10,7 @@ export async function verifyAuthToken(req: Request, res: Response, next: NextFun
     //zod schema
     const User = z.object({
         username: z.string(),
-        role: z.enum(['admin', 'customer']),
+        role: z.enum(['admin', 'customer', 'host']),
         id: z.string()
     })
 

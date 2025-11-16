@@ -10,7 +10,7 @@ interface User extends Document {
 const userSchema = new Schema<User>({
     username: {type: String, required: true},
     password: {type: String, required: true},
-    role: {type: String, enum:['customer', 'admin'], required: true}
+    role: {type: String, enum:['customer', 'admin', 'host'], required: true}
 });
 
 const User = mongoose.model<User>('User', userSchema);
