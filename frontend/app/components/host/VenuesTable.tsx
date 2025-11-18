@@ -126,7 +126,7 @@ export default function VenuesTable() {
                     </tr>
                 ) : (
                     venues.map(venue => (
-                        <tr>
+                        <tr key={venue._id}>
                             <td>{venue.name}</td>
                             <td>{venue.address}</td>
                             <td>{venue.capacity}</td>

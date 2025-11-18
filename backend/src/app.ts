@@ -58,8 +58,8 @@ app.delete("/ticket", ticketController.deleteTicket);
 
 app.get("/event/all", eventController.getEvents);
 app.delete("/event", eventController.deleteEvent);
-
-app.post("/admin/event", eventController.createEvent);
+app.get("/event/my-events", eventController.getMyEvents);
+app.post("/event", eventController.createEvent);
 
 app.get("/my-venues", venueController.getMyVenues);
 app.post("/venue", venueController.createVenue);

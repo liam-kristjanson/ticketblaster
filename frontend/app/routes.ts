@@ -19,6 +19,7 @@ export default [
     ]),
 
     route("/host", "./layouts/hostLayout.tsx", [
-        index("./routes/host/index.tsx")
+        index("./routes/host/index.tsx"),
+        route("create-event", "./routes/host/createEvent.tsx")
     ])
 ] satisfies RouteConfig;

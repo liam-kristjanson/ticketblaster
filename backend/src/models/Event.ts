@@ -3,16 +3,16 @@ import mongoose, { Schema } from "mongoose";
 
 interface Event extends Document {
     title: string;
-    eventLocation: string;
     startTime: Date;
-    ownerId: ObjectId;
+    owner: ObjectId;
+    venue: ObjectId;
 }
 
 const eventSchema = new Schema<Event>({
     title: {type: String, required: true},
-    eventLocation: {type: String, required: true},
     startTime: {type: Date, required: true},
-    ownerId: {type: Schema.Types.ObjectId, required: true}
+    venue: {type: Schema.Types.ObjectId, required: true, ref:"Venue"},
+    owner: {type: Schema.Types.ObjectId, required: true, ref:"User"}
 });
 
 const Event = mongoose.model<Event>('Event', eventSchema)

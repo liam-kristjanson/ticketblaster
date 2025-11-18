@@ -13,7 +13,7 @@ export default function HostLayout() {
         <>
             <Navbar className="bg-body-secondary">
                 <Navbar.Brand className="ms-3" href="/admin">
-                    Ticketblaster Admin
+                    Ticketblaster Host Portal
                 </Navbar.Brand>
 
                 <Navbar.Collapse className="d-flex justify-content-end gap-2">

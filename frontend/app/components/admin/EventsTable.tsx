@@ -122,7 +122,7 @@ export default function EventsTable() {
                             </td>
 
                             <td>
-                                {event.eventLocation}
+                                {event.venue}
                             </td>
 
                             <td>

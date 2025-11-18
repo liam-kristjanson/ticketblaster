@@ -10,7 +10,7 @@ export interface Ticket {
 export interface TicketEvent {
     _id: string;
     title: string;
-    eventLocation: string;
+    venue: string;
     startTime: Date;
 }
 

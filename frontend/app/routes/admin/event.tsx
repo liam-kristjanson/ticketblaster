@@ -59,7 +59,7 @@ export default function Event() {
 
                 <p>Title: {event.title}</p>
                 <p>Start Time: {new Date(event.startTime).toLocaleString()}</p>
-                <p>Location: {event.eventLocation}</p>
+                <p>Location: {event.venue}</p>
                 
                 <Button onClick={() => {setShowModal(true)}}>Create Tickets</Button>
 

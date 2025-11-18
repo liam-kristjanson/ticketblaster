@@ -87,7 +87,7 @@ export default function Checkout() {
             </p>
 
             <p>
-                Location: {ticket.event?.eventLocation}
+                Location: {ticket.event?.venue}
             </p>
 
             <p>

@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react"
 import { Button, Spinner, Table } from "react-bootstrap";
 import { Navigate } from "react-router";
 import { type Venue } from "types";
+import EventsTable from "~/components/host/EventsTable";
 import VenuesTable from "~/components/host/VenuesTable";
 import ServerMessageContainer from "~/components/ServerMessageContainer";
 import { AuthContext } from "~/context/authContext"
@@ -15,6 +16,12 @@ export default function HostIndex() {
 
     return <>
         <h1>Welcome to the host index</h1>
+
+        <h3>
+            My Events
+        </h3>
+        <EventsTable/>
+
 
         <h3>My Venues</h3>
         <VenuesTable/>
