@@ -58,3 +58,13 @@ export function verifyAdminStatus(req: Request, res: Response, next: NextFunctio
         return;
     }
 }
+
+export function verifyHostStatus(req: Request, res: Response, next: NextFunction) {
+    if (req.user?.role === "host") {
+        next();
+        return;
+    } else {
+        res.status(401).json({error: "401: Unauthorized"});
+        return;
+    }
+}

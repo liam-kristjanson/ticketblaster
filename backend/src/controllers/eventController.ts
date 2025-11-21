@@ -73,7 +73,7 @@ export async function deleteEvent(req: Request, res: Response) {
 export async function getMyEvents(req: Request, res: Response) {
     switch (req.user?.role) {
         case "host":
-            res.json(await Event.find({owner: req.user.id}));
+            res.json(await Event.find({owner: req.user.id}).populate('venue').exec());
             return;
         default:
             res.status(401).json({error: "401: Unauthorized"});

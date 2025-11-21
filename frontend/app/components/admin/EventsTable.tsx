@@ -122,7 +122,11 @@ export default function EventsTable() {
                             </td>
 
                             <td>
-                                {event.venue}
+                                {typeof event.venue == 'string' ? (
+                                    event.venue
+                                ) : (
+                                    event.venue.name
+                                )}
                             </td>
 
                             <td>

@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react"
-import { Button, Spinner, Table } from "react-bootstrap";
+import { Button, Modal, Spinner, Table } from "react-bootstrap";
 import { type ServerMessage, type TicketEvent } from "types"
 import { AuthContext } from "~/context/authContext";
 import ServerResponseContainer from "../ServerResopnseContainer";
 import { Link } from "react-router";
+import TicketCreationModal from "./TicketCreationModal";
 
 export default function EventsTable() {
 
@@ -12,6 +13,9 @@ export default function EventsTable() {
     const [events, setEvents] = useState<TicketEvent[]>([]);
     const [serverMessage, setServerMessage] = useState<ServerMessage>(['', 'info']);
     const [isEventsLoading, setIsEventsLoading] = useState<boolean>(false);
+
+    const [showTicketCreationModal, setShowTicketCreationModal] = useState<boolean>(false);
+    const [eventForTicketCreation, setEventForTicketCreation] = useState<TicketEvent | undefined>(undefined);
 
     useEffect(() => {
 
@@ -81,7 +85,7 @@ export default function EventsTable() {
                                 </td>
 
                                 <td>
-                                    {myEvent.venue}
+                                    {typeof myEvent.venue != 'string' && myEvent.venue.name}
                                 </td>
 
                                 <td>
@@ -93,7 +97,8 @@ export default function EventsTable() {
                                 </td>
 
                                 <td>
-                                    <Button>Something</Button>
+                                    <Link to="event" state={{event: myEvent}}><Button className="me-2"variant="secondary">Event Dashboard</Button></Link>
+                                    <Button onClick={() => {setShowTicketCreationModal(true); setEventForTicketCreation(myEvent)}}>Release Tickets</Button>
                                 </td>
                             </tr>
                         ))
@@ -117,5 +122,7 @@ export default function EventsTable() {
         </Table>
 
         <ServerResponseContainer response={serverMessage}/>
+
+        {eventForTicketCreation && <TicketCreationModal show={showTicketCreationModal} hideModal={() => {setShowTicketCreationModal(false)}} event={eventForTicketCreation}/>}
     </>
 }

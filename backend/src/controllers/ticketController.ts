@@ -11,6 +11,31 @@ export async function getAdminTickets(req: Request, res: Response) {
     res.json(tickets);
 }
 
+export async function getHostTickets(req: Request, res: Response) {
+    try {
+        if (typeof req.query.eventId != 'string' || !ObjectId.isValid(req.query.eventId)) {
+            res.status(400).json({error: "Missing or invalid eventId"});
+            return;
+        }
+
+        const matchedEvent = await Event.findById(req.query.eventId);
+
+        if (matchedEvent?.owner.toString() !== req.user.id) {
+            console.log("Rejected host tickets request due to mismatched user id and event owner id");
+            res.status(401).json({error: "401: Unauthorized"});
+            return;
+        }
+
+        const matchedTickets = await Ticket.find({event: req.query.eventId});
+
+        res.json(matchedTickets);
+
+    } catch (err) {
+        console.error("The following error occured while fetching host tickets:", err);
+        res.status(500).json({error: "An error occured while fetching host tickets"});
+    }
+}
+
 export async function getCustomerTickets(req: Request, res: Response) {
     //validate event id
     if (typeof req.query.eventId != 'string') {
@@ -74,47 +99,49 @@ export async function deleteTicket(req: Request, res: Response) {
 }
 
 export async function createEventTickets(req: Request, res: Response) {
-    if (!req.user || req.user.role != "admin") {
-        res.status(401).json({error: "401 : Unauthorized"});
-        return;
-    }
+    try {
+        if (!req.user || !['admin', 'host'].includes(req.user.role)) {
+            res.status(401).json({error: "401 : Unauthorized"});
+            return;
+        }
 
-    if (!req.query.eventId || typeof(req.query.eventId) != 'string') {
-        res.status(400).json({error: "eventId must be a string specified in querystring"});
-        return;
-    }
+        if (!req.query.eventId || typeof(req.query.eventId) != 'string') {
+            res.status(400).json({error: "eventId must be a string specified in querystring"});
+            return;
+        }
 
-    if (typeof(req.query.count) != 'string' || isNaN(parseInt(req.query.count))) {
-        res.status(400).json({error: "eventId must be a number specified in querystring"});
-        return;
-    }
+        if (typeof(req.query.count) != 'string' || isNaN(parseInt(req.query.count))) {
+            res.status(400).json({error: "eventId must be a number specified in querystring"});
+            return;
+        }
 
-    const matchedEvent = await Event.findById(req.query.eventId).exec();
+        const matchedEvent = await Event.findById(req.query.eventId).exec();
 
-    if (!matchedEvent) {
-        res.status(404).json({error: "Event with specified id not found."});
-        return;
-    }
+        if (!matchedEvent) {
+            res.status(404).json({error: "Event with specified id not found."});
+            return;
+        }
 
-    let ticketPromiseArr = []
+        let ticketsToCreate : Ticket[] = [];
 
-    for (let i = 0; i<parseInt(req.query.count); i++) {
-        let newTicket = new Ticket(
-            {
-                scanCode: 123, 
+        for (let i = 0; i<parseInt(req.query.count); i++) {
+            ticketsToCreate.push(new Ticket({
+                scanCode: "1",
                 event: req.query.eventId,
                 isScanned: false,
                 status: "available",
-                price: "$1"    
-            }
-        )
+                price: "$1",
+            }));
+        }
 
-        ticketPromiseArr.push(newTicket.save());
+        const result = await Ticket.insertMany(ticketsToCreate);
+
+        res.status(200).json({message: "All tickets created successfuly"});
+    } catch (err) {
+        console.error("The following error occured while creating tickets:", err);
+        res.status(500).json({error: "An error occured while creating tickets"});
+        return;
     }
-
-    const allTicketsCreated = await Promise.all(ticketPromiseArr);
-
-    res.status(200).json({message: "All tickets created successfuly"});
 }
 
 export async function purchaseTicket(req: Request, res: Response) {

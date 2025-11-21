@@ -44,7 +44,9 @@ app.post("/auth/login", authController.login);
 /////////////////////////////
 app.use(authMiddleware.verifyAuthToken);
 
+//ROLE SPECIFIC AUTH MIDDLEWARE
 app.use("/admin/", authMiddleware.verifyAdminStatus);
+app.use("/host/", authMiddleware.verifyHostStatus);
 
 app.get("/customer/tickets", ticketController.getCustomerTickets);
 app.post("/customer/purchase-ticket", ticketController.purchaseTicket);
@@ -64,6 +66,8 @@ app.post("/event", eventController.createEvent);
 app.get("/my-venues", venueController.getMyVenues);
 app.post("/venue", venueController.createVenue);
 app.delete("/venue", venueController.deleteVenue);
+
+app.get("/host/tickets", ticketController.getHostTickets);
 
 app.listen(PORT, () => {
     console.log("DB Connection string: ", process.env.DB_CONNECTION_STRING);

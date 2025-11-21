@@ -9,6 +9,7 @@ export default function ServerResponseContainer({response} : ServerResponseConta
     const [message, type] = response
 
     return (
+        message &&
         <p className={"fw-bold text-" + type}>
             {message}
         </p> 
