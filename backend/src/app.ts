@@ -54,7 +54,7 @@ app.get("/customer/my-tickets", ticketController.getMyTickets);
 
 app.get("/admin/tickets", ticketController.getAdminTickets);
 
-app.post("/ticket/scan", ticketController.scanTicket);
+app.post("/host/ticket/scan", ticketController.scanTicket);
 app.post("/tickets", ticketController.createEventTickets);
 app.delete("/ticket", ticketController.deleteTicket);
 

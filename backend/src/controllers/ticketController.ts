@@ -59,7 +59,7 @@ export async function scanTicket(req: Request, res: Response) {
         return;
     }
 
-    const matchedTicket = await Ticket.findOne({scanCode: req.query.scanCode}).exec();
+    const matchedTicket = await Ticket.findOne({_id: req.query.scanCode}).exec();
 
     if (matchedTicket && !matchedTicket.isScanned) {
         matchedTicket.isScanned = true;

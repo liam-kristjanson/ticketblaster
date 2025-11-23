@@ -29,12 +29,12 @@ export default function HostLayout() {
                     <Col xs={2} className="vh-100 bg-body-tertiary">
                         <Stack gap={2} className="py-3">
 
-                            <NavLink to="/admin/create-event">
-                                <Button variant="outline-primary" className="w-100 btn-lg text-start">Events</Button>
+                            <NavLink to="/host/create-event">
+                                <Button variant="outline-primary" className="w-100 btn-lg text-start">+ Add Event</Button>
                             </NavLink>
 
-                            <NavLink to="/admin/create-tickets">
-                                <Button variant="outline-primary" className="w-100 btn-lg text-start">Tickets</Button>
+                            <NavLink to="/host/scan-tickets">
+                                <Button variant="outline-primary" className="w-100 btn-lg text-start">Scan Tickets</Button>
                             </NavLink>
                         </Stack>
                     </Col>
