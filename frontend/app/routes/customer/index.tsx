@@ -21,7 +21,11 @@ export default function CustomerIndex() {
     useEffect(() => {
         setEventsLoading(true);
 
-        fetch(import.meta.env.VITE_SERVER + "/event/all")
+        fetch(import.meta.env.VITE_SERVER + "/event/all", {
+            headers: {
+                authorization: user?.authToken ?? ""
+            }
+        })
         .then(response => {
             response.json().then(json => {
                 setEventsLoading(false);

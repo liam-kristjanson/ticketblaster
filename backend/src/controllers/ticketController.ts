@@ -48,7 +48,7 @@ export async function getCustomerTickets(req: Request, res: Response) {
         return;
     }
 
-    const matchedTickets = await Ticket.find({event: req.query.eventId}).populate('event').exec();
+    const matchedTickets = await Ticket.find({event: req.query.eventId, status: "available"}).populate('event').exec();
 
     res.status(200).json(matchedTickets);
 }

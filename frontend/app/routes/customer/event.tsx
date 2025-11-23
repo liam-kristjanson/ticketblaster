@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Container, Table } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router";
 import { type Ticket, type TicketEvent } from "types";
 import ServerMessageContainer from "~/components/ServerMessageContainer";
+import { AuthContext } from "~/context/authContext";
 
 export default function Event() {
     const { state } = useLocation();
     const event = state.event as TicketEvent;
+    const { user } = useContext(AuthContext);
 
     const navigate = useNavigate();
 
@@ -16,7 +18,11 @@ export default function Event() {
     useEffect(() => {
         const params = new URLSearchParams({eventId: event._id});
 
-        fetch(import.meta.env.VITE_SERVER + "/customer/tickets?" + params.toString())
+        fetch(import.meta.env.VITE_SERVER + "/customer/tickets?" + params.toString(), {
+            headers: {
+                authorization: user?.authToken ?? ""
+            }
+        })
         .then(response => {
             response.json().then(json => {
                 console.log("Event tickets:")
