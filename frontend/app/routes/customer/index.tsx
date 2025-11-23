@@ -93,7 +93,7 @@ export default function CustomerIndex() {
                             {tickets.length > 0 ? (
                                 <>
                                     {tickets.map(ticket => (
-                                        <Col xl={3}>
+                                        <Col xl={3} className="mb-2">
                                             <TicketCard ticket={ticket}/>
                                         </Col>
                                     ))}

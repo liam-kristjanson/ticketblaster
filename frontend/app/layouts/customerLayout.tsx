@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Button, Nav, Navbar } from "react-bootstrap";
+import { Button, Nav, Navbar, Offcanvas } from "react-bootstrap";
 import { Link, Navigate, Outlet, useLocation } from "react-router";
 import { AuthContext } from "~/context/authContext";
 
@@ -11,12 +11,12 @@ export default function AdminLayout() {
 
     return (
         <>
-            <Navbar fixed="top" className="bg-body-tertiary px-2" expand="md">
-                <Navbar.Brand href="/customer" className="text-primary">
+            <Navbar fixed="top" className="bg-body-tertiary px-3" expand="md">
+                <Navbar.Brand href="/customer" className="text-primary fw-bold">
                     TicketBlaster
                 </Navbar.Brand>
 
-                <Navbar.Collapse id="basic-navbar-nav">
+                {/* <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="/">Home</Nav.Link>
                         <Nav.Link href="">Something Else</Nav.Link>
@@ -25,7 +25,22 @@ export default function AdminLayout() {
 
                 <Navbar.Collapse className="justify-content-end">
                     <Navbar.Text>Logged in as: {user.username} <Link to="/"><Button size="sm" variant="secondary" onClick={() => setUser(null)}>Log out</Button></Link></Navbar.Text>
-                </Navbar.Collapse>
+                </Navbar.Collapse> */}
+
+                <Navbar.Toggle/>
+                <Navbar.Offcanvas placement="end">
+                    <Offcanvas.Header closeButton>
+                        <Offcanvas.Title>
+                            Menu
+                        </Offcanvas.Title>
+                    </Offcanvas.Header>
+
+                    <Offcanvas.Body className="justify-content-end">
+                        <Nav className="justify-content-end">
+                            <Button onClick={() => {setUser(null)}}>Log out</Button>
+                        </Nav>
+                    </Offcanvas.Body>
+                </Navbar.Offcanvas>
             </Navbar>
 
             <div className="w-100" style={{height: "48px", margin:"8px"}}>
