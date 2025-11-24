@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import HomeNavbar from "~/components/HomeNavbar";
 import ServerMessageContainer from "~/components/ServerMessageContainer";
@@ -16,8 +16,10 @@ export default function Login() {
     const [passwordFeedback, setPasswordFeedback] = useState<string>("");
 
     const [msg, setMsg] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const {setUser, user} = useContext(AuthContext);
+    const {setUser} = useContext(AuthContext);
+
 
     function handleSubmit() {
         if (validateInput()) {
@@ -27,6 +29,7 @@ export default function Login() {
 
     function postLogin() {
         const requestBody = {username, password}
+        setIsLoading(true);
 
         fetch(import.meta.env.VITE_SERVER + "/auth/login", {
             method: "POST",
@@ -52,6 +55,13 @@ export default function Login() {
                     setMsg(responseJson.error ?? "An unexpected error occured");
                 }
             })
+        })
+        .catch(err => {
+            console.error(err);
+            setMsg("An unexpected error occured while logging in. Please try again");
+        })
+        .finally(() => {
+            setIsLoading(false);
         })
     }
 
@@ -87,17 +97,24 @@ export default function Login() {
                                 <Form onSubmit={(e) => {e.preventDefault(); handleSubmit()}}>
                                     <Form.Group>
                                         <Form.Label>Username</Form.Label>
-                                        <Form.Control isInvalid={Boolean(usernameFeedback)} type="text" value={username} onChange={(e) => {setUsername(e.target.value); setUsernameFeedback("")}}/>
+                                        <Form.Control disabled={isLoading} isInvalid={Boolean(usernameFeedback)} type="text" value={username} onChange={(e) => {setUsername(e.target.value); setUsernameFeedback("")}}/>
                                         <Form.Control.Feedback type="invalid">{usernameFeedback}</Form.Control.Feedback>
                                     </Form.Group>
 
                                     <Form.Group className="mb-3">
                                         <Form.Label>Password</Form.Label>
-                                        <Form.Control isInvalid={Boolean(passwordFeedback)} type="password" value={password} onChange={(e) => {setPasword(e.target.value); setPasswordFeedback("")}}/>
+                                        <Form.Control disabled={isLoading} isInvalid={Boolean(passwordFeedback)} type="password" value={password} onChange={(e) => {setPasword(e.target.value); setPasswordFeedback("")}}/>
                                         <Form.Control.Feedback type="invalid">{passwordFeedback}</Form.Control.Feedback>
                                     </Form.Group>
 
-                                    <Button type="submit" variant="primary">Log in</Button>
+                                    
+                                    {isLoading ? (
+                                        <>
+                                            <Spinner/> Loading...
+                                        </>
+                                    ) : (
+                                        <Button type="submit" variant="primary">Log in</Button>
+                                    )}
                                 </Form>
                             </Card.Body>
                         </Card>
