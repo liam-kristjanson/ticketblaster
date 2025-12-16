@@ -1,6 +1,5 @@
 import express from 'express';
 
-import * as db from "./db";
 import cors from "cors";
 import bodyParser = require('body-parser');
 
@@ -10,10 +9,7 @@ import * as authController from "./controllers/authController";
 import * as authMiddleware from "./middleware/authMiddleware";
 import * as venueController from "./controllers/venueController";
 
-db.connect();
-
 const app = express();
-const PORT = process.env.PORT || 8080;
 
 const corsOptions = {
     origin: process.env.FRONT_ORIGIN
@@ -69,7 +65,4 @@ app.delete("/venue", venueController.deleteVenue);
 
 app.get("/host/tickets", ticketController.getHostTickets);
 
-app.listen(PORT, () => {
-    console.log("DB Connection string: ", process.env.DB_CONNECTION_STRING);
-    return console.log("Express is listening at http://localhost:" + PORT);
-})
+export default app;

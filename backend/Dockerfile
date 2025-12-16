@@ -15,4 +15,4 @@ EXPOSE 80
 
 WORKDIR /app
 
-CMD ["node", "dist/app.js"]
+CMD ["node", "dist/server.js"]
