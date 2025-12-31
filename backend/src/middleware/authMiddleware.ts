@@ -41,6 +41,8 @@ export async function verifyAuthToken(req: Request, res: Response, next: NextFun
                 console.log("Parsed user data: ", req.user);
                 next();
             } else {
+                console.log("Rejecting request due to failure to parse jwt authorization header");
+
                 res.status(401).json({error: "401: Unauthorized"});
             }
         } catch (err) {
