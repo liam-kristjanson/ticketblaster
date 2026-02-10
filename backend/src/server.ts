@@ -1,7 +1,11 @@
 import app from "./app";
 import * as db from "./db"
+import { configDotenv } from "dotenv";
 
-db.connect();
+configDotenv();
+const DB_CONNECTION_STRING = process.env.DB_CONNECTION_STRING + "ticketblaster";
+
+db.connect(DB_CONNECTION_STRING);
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {

@@ -5,40 +5,38 @@ import { mockCustomerToken, mockHostToken } from '../mocks';
 describe('Admin authorization middleware', () => {
     it('Responds to requests without auth token with status 401', async () => {
 
-        return request(app).get('/admin/')
-        .then(res => {
-            expect(res.status).toBe(401);
-        })
+        
+        let res = await request(app).get('/admin/')
+        expect(res.status).toBe(401);
     })
 
     it('Responds to invalid jwt in authorization header with status 401', async () => {
 
-        return request(app).get('/admin/')
-        .set('Authorization', 'abcdefg12345')
-        .then(res => {
-            expect(res.status).toBe(401);
-        })
+        let res = await request(app).get('/admin/')
+        .set('Authorization', 'abcdefg12345');
+
+        expect(res.status).toBe(401);
     })
 
     it('Responds to requests with customer authorization tokens with status 401', async () => {
-        return request(app).get('/admin/')
+        let res = await request(app).get('/admin/')
         .set('Authorization', mockCustomerToken)
-        .then(res => {
-            expect(res.status).toBe(401);
-        })
+
+        expect(res.status).toBe(401);
     })
 
     it('Responds to requests with host authorization tokens with status 401', async () => {
-        return request(app).get('/admin/')
+        let res = await request(app).get('/admin/')
         .set('Authorization', mockHostToken)
-        .then(res => {
-            expect(res.status).toBe(401);
-        })
+
+        expect(res.status).toBe(401);
     })
 })
 
 
 describe('GET /admin/tickets', () => {
+    console.log("Testing get admin tickets...")
+
     it('Responds to requests without auth token with status 401', async () => {
         const res = await request(app).get('/admin/tickets');
 
