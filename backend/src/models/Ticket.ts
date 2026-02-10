@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import { TicketStatus } from "../types";
 
 interface Ticket extends Document {

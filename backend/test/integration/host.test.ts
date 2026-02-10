@@ -2,12 +2,62 @@ import request from 'supertest';
 import app from '../../src/app';
 import { mockHostToken } from '../mocks';
 import { configDotenv } from 'dotenv';
+import * as DataFactory from "../DataFactory"
+import User from '../../src/models/User';
+import Venue from '../../src/models/Venue';
+import Ticket from '../../src/models/Ticket';
+import Event from '../../src/models/Event';
+import jwt from 'jsonwebtoken';
+import { ObjectId } from 'mongodb';
 
 configDotenv();
 
+let goodHost : User;
+let goodVenue : Venue;
+let goodEvent : Event;
+let goodTicket : Ticket;
+let goodHostToken : string;
+
+let evilHost : User;
+let evilVenue: Venue;
+let evilEvent : Event;
+let evilTicket : Ticket;
+let evilHostToken : string;
+
+
+beforeAll(async () => {
+    console.log("Creating good host data...");
+    goodHost = await DataFactory.createUser({role: "host"});
+    goodVenue = await DataFactory.createVenue(goodHost);
+    goodEvent = await DataFactory.createEvent(goodVenue, goodHost);
+    goodTicket = await DataFactory.createTicket(goodEvent);
+    console.log("Good host data created.");
+
+    console.log("Creating evil host data...");
+    evilHost = await DataFactory.createUser({role: "host"});
+    evilVenue = await DataFactory.createVenue(evilHost);
+    evilEvent = await DataFactory.createEvent(evilVenue, evilHost);
+    evilTicket = await DataFactory.createTicket(evilEvent);
+    console.log("Evil host data created.");
+
+    goodHostToken = jwt.sign({
+        id: goodHost.id,
+        username: goodHost.username,
+        role: goodHost.role
+    },
+    process.env.JWT_SECRET);
+
+    evilHostToken = jwt.sign({
+        id: evilHost.id,
+        username: evilHost.username,
+        role: evilHost.role
+    },
+    process.env.JWT_SECRET);
+})
 
 describe('GET /host/tickets', () => {
-    it('Responds to unauthorized users with status 401', async () => {
+
+    it('Responds to unauthenticated requests with status 401', async () => {
         return request(app).get('/host/tickets')
         .then(res => {
             expect(res.status).toBe(401);
@@ -31,6 +81,43 @@ describe('GET /host/tickets', () => {
             expect(res.status).toBe(400);
         })
     });
+
+    it('Responds to authorized user with correct tickets on owned event', async () => {
+
+        const res = await request(app).get('/host/tickets')
+        .query({eventId: goodEvent.id})
+        .set('Authorization', goodHostToken);
+
+        expect(res.status).toBe(200);
+        
+        let ticketArray = res.body;
+
+        let ticketIds = ticketArray.map((ticket: { _id: string; }) => {
+            return ticket._id;
+        })
+
+        expect(ticketIds).toContain(evilTicket.id);
+        expect(ticketIds).not.toContain(evilTicket.id);
+    });
+
+    it('Responds to authenticated user with status 401 on unowned event', async () => {
+
+        const res = await request(app).get('/host/tickets')
+        .query({eventId: goodEvent.id})
+        .set('Authorization', evilHostToken);
+
+        expect(res.status).toBe(401);
+    })
+
+    it('Responds to authenticated user with status 401 on nonexistant event', async () => {
+        
+        const res = await request(app).get('/host/tickets')
+        .query({eventId: new ObjectId().toString()})
+        .set('Authorization', evilHostToken);
+
+        expect(res.status).toBe(401);
+    })
+
 });
 
 describe('POST /host/ticket/scan', () => {

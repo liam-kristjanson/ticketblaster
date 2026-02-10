@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
 interface Event extends Document {
     title: string;
