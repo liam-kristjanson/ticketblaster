@@ -19,15 +19,6 @@ beforeAll(async () => {
     console.log("Database connected!")
 }, 60000)
 
-// afterEach(async () => {
-//     console.log("Cleaning up collections...");
-//     const collections = mongoose.connection.collections;
-//     for (const key in collections) {
-//         await collections[key].deleteMany({});
-//     }
-//     console.log("Collections cleaned.");
-// })
-
 afterAll(async() => {
     console.log("Disconnecting from database...");
     await mongoose.disconnect();

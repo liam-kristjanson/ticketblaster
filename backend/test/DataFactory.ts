@@ -1,4 +1,3 @@
-import { overwriteMiddlewareResult } from "mongoose";
 import Event from "../src/models/Event";
 import Ticket from "../src/models/Ticket";
 import User from "../src/models/User";

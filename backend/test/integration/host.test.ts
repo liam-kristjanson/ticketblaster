@@ -96,7 +96,7 @@ describe('GET /host/tickets', () => {
             return ticket._id;
         })
 
-        expect(ticketIds).toContain(evilTicket.id);
+        expect(ticketIds).toContain(goodTicket.id);
         expect(ticketIds).not.toContain(evilTicket.id);
     });
 
