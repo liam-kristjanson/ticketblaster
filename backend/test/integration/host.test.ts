@@ -109,7 +109,7 @@ describe('GET /host/tickets', () => {
         expect(res.status).toBe(401);
     })
 
-    it('Responds to authenticated user with status 401 on nonexistant event', async () => {
+    it('Responds to authenticated user with status 401 on non-existant event', async () => {
         
         const res = await request(app).get('/host/tickets')
         .query({eventId: new ObjectId().toString()})
@@ -137,5 +137,41 @@ describe('POST /host/ticket/scan', () => {
         .then(res => {
             expect(res.status).toBe(400);
         })
+    });
+
+    it('Responds to non-existing ticket id with status 401', async () => {
+        const fakeOid = new ObjectId().toString();
+
+        const res = await request(app)
+        .post('/host/ticket/scan')
+        .query({scanCode: fakeOid})
+        .set('Authorization', goodHostToken)
+
+        expect(res.status).toBe(401);
+    });
+
+    it('Responds to ticket for wrong event with status 401', async () => {
+        const res = await request(app)
+        .post('/host/ticket/scan')
+        .query({scanCode: evilTicket.id})
+        .set('Authorization', goodHostToken);
+
+        expect(res.status).toBe(401);
+    });
+
+    it('Responds to first ticket scan with status 200, and second scan with status 403', async () => {
+        const scan1Res = await request(app)
+        .post('/host/ticket/scan')
+        .query({scanCode: goodTicket.id})
+        .set('Authorization', goodHostToken);
+
+        expect(scan1Res.status).toBe(200);
+
+        const scan2Res = await request(app)
+        .post('/host/ticket/scan')
+        .query({scanCode: goodTicket.id})
+        .set('Authorization', goodHostToken);
+
+        expect(scan2Res.status).toBe(403);
     })
 })

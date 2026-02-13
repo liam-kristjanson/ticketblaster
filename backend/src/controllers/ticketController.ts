@@ -59,21 +59,22 @@ export async function scanTicket(req: Request, res: Response) {
         return;
     }
 
-    const matchedTicket = await Ticket.findOne({_id: req.query.scanCode}).exec();
+    try {
+        const matchedTicket = await Ticket.findOne({_id: req.query.scanCode}).populate<{event: Event}>('event');
 
-    if (matchedTicket && !matchedTicket.isScanned) {
-        matchedTicket.isScanned = true;
+        if (matchedTicket && matchedTicket.event.owner.toString() === req.user?.id && !matchedTicket.isScanned) {
+            matchedTicket.isScanned = true;
+            await matchedTicket.save();
 
-        await matchedTicket.save();
-
-        res.status(200).json({message: "Ticket scanned successfuly."})
-        return;
-    } else if (!matchedTicket) {
-        res.status(404).json({error: "Ticket with scan code " + req.query.scanCode + " does not exist.",});
-        return;
-    } else if (matchedTicket.isScanned) {
-        res.status(403).json({error: "Ticket has already been scanned."});
-        return;
+            res.status(200).json({message: "Ticket scanned successfuly."});
+        } else if (matchedTicket && matchedTicket.event.owner.toString() === req.user?.id) {
+            res.status(403).json({error: "Ticket has already been scanned."});
+        } else {
+            res.status(401).json({error: "Invalid ticket."});
+        }
+    } catch (err) {
+        console.error('The following error occured while scanning ticket with scanCode ' + req.query.scanCode, err);
+        res.status(500).json({error: "500: Internal server error."})
     }
 }
 

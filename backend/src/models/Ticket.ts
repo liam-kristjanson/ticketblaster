@@ -1,10 +1,11 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 import { TicketStatus } from "../types";
+import Event from "./Event";
 
 interface Ticket extends Document {
     scanCode: string;
     isScanned: boolean;
-    event: String;
+    event: Types.ObjectId;
     status: TicketStatus;
     owner: String;
     price: string;
