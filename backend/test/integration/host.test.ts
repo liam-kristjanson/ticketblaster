@@ -24,21 +24,22 @@ let evilEvent : Event;
 let evilTicket : Ticket;
 let evilHostToken : string;
 
+let testCustomer : User;
+let customerToken : string;
+
 
 beforeAll(async () => {
-    console.log("Creating good host data...");
     goodHost = await DataFactory.createUser({role: "host"});
     goodVenue = await DataFactory.createVenue(goodHost);
     goodEvent = await DataFactory.createEvent(goodVenue, goodHost);
     goodTicket = await DataFactory.createTicket(goodEvent);
-    console.log("Good host data created.");
 
-    console.log("Creating evil host data...");
     evilHost = await DataFactory.createUser({role: "host"});
     evilVenue = await DataFactory.createVenue(evilHost);
     evilEvent = await DataFactory.createEvent(evilVenue, evilHost);
     evilTicket = await DataFactory.createTicket(evilEvent);
-    console.log("Evil host data created.");
+
+    testCustomer = await DataFactory.createUser({role: "customer"});
 
     goodHostToken = jwt.sign({
         id: goodHost.id,
@@ -51,6 +52,13 @@ beforeAll(async () => {
         id: evilHost.id,
         username: evilHost.username,
         role: evilHost.role
+    },
+    process.env.JWT_SECRET);
+
+    customerToken = jwt.sign({
+        id: testCustomer.id,
+        username: testCustomer.username,
+        role: testCustomer.role
     },
     process.env.JWT_SECRET);
 })
@@ -173,5 +181,80 @@ describe('POST /host/ticket/scan', () => {
         .set('Authorization', goodHostToken);
 
         expect(scan2Res.status).toBe(403);
+    });
+});
+
+describe('POST /host/tickets', () => {
+    it('Responds to unauthenticated requests with status 401', async () => {
+        const res = await request(app)
+        .post('/host/tickets');
+
+        expect(res.status).toBe(401);
+    });
+
+    it('Responds to requests from customers with status 401', async () => {
+        const res = await request(app)
+        .post('/host/tickets')
+        .set('Authorization', customerToken);
+
+        expect(res.status).toBe(401);
+    });
+
+    it('Responds to requests with missing eventId with status 400', async () => {
+        const missingIdResult = await request(app)
+        .post('/host/tickets')
+        .set('Authorization', goodHostToken);
+
+        expect(missingIdResult.status).toBe(400);
+    })
+
+    it('Responds to requests with missing or invalid count parameter with status 400', async () => {
+        const missingCountRequest = request(app)
+        .post('/host/tickets')
+        .set('Authorization', goodHostToken)
+        .query({eventId: goodEvent.id});
+
+        const invalidCountRequest = request(app)
+        .post('/host/tickets')
+        .set('Authorization', goodHostToken)
+        .query({eventId: goodEvent.id, count: "abc123"})
+
+        const [missingCountResult, invalidCountResult] = await Promise.all([missingCountRequest, invalidCountRequest]);
+
+        expect(missingCountResult.status).toBe(400);
+        expect(invalidCountResult.status).toBe(400);
+    });
+
+    it('Responds to requests with invalid or unowned eventId with status 400', async () => {
+
+        const invalidIdRequest = request(app)
+        .post('/host/tickets')
+        .set('Authorization', goodHostToken)
+        .query({eventId: "abc123", count:1});
+
+        const fakeIdRequest = request(app)
+        .post('/host/tickets')
+        .set('Authorization', goodHostToken)
+        .query({eventId: new ObjectId().toString(), count:1});
+
+        const unownedIdRequest = request(app)
+        .post('/host/tickets')
+        .set('Authorization', evilHostToken)
+        .query({eventId: goodEvent.id});
+
+        const [invalidIdResult, fakeIdResult, unownedIdResult] = await Promise.all([invalidIdRequest, fakeIdRequest, unownedIdRequest]);
+
+        expect(invalidIdResult.status).toBe(400);
+        expect(fakeIdResult.status).toBe(400);
+        expect(unownedIdResult.status).toBe(400);
+    });
+
+    it('Responds to valid request on create tickets for owned events with status 200', async () => {
+        const res = await request(app)
+        .post('/host/tickets')
+        .set('Authorization', goodHostToken)
+        .query({eventId: goodEvent.id, count: goodVenue.capacity});
+
+        expect(res.status).toBe(200);
     })
 })

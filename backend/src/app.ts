@@ -65,5 +65,6 @@ app.delete("/venue", venueController.deleteVenue);
 
 app.post("/host/ticket/scan", ticketController.scanTicket);
 app.get("/host/tickets", ticketController.getHostTickets);
+app.post("/host/tickets", ticketController.createEventTickets);
 
 export default app;

@@ -106,20 +106,20 @@ export async function createEventTickets(req: Request, res: Response) {
             return;
         }
 
-        if (!req.query.eventId || typeof(req.query.eventId) != 'string') {
-            res.status(400).json({error: "eventId must be a string specified in querystring"});
+        if (!req.query.eventId || typeof(req.query.eventId) != 'string' || !ObjectId.isValid(req.query.eventId)) {
+            res.status(400).json({error: "Invalid eventId"});
             return;
         }
 
         if (typeof(req.query.count) != 'string' || isNaN(parseInt(req.query.count))) {
-            res.status(400).json({error: "eventId must be a number specified in querystring"});
+            res.status(400).json({error: "count must be a number specified in querystring"});
             return;
         }
 
         const matchedEvent = await Event.findById(req.query.eventId).exec();
 
-        if (!matchedEvent) {
-            res.status(404).json({error: "Event with specified id not found."});
+        if (!matchedEvent || matchedEvent.owner.toString() !== req.user?.id) {
+            res.status(400).json({error: "Invalid eventId"});
             return;
         }
 
