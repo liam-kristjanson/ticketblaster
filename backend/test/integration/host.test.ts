@@ -306,5 +306,54 @@ describe('POST /host/venue', () => {
         })
 
         expect(res.status).toBe(200);
+    });
+});
+
+describe('GET /host/my-venues', () => {
+    it('Responds to unauthenticated requests with status 401', async () => {
+        const res = await request(app)
+        .get('/host/my-venues');
+
+        expect(res.status).toBe(401);
+    });
+
+    it('Responds to customer requests with status 401', async () => {
+        const res = await request(app)
+        .get('/host/my-venues')
+        .set('Authorization', customerToken);
+
+        expect(res.status).toBe(401);
+    });
+
+    it('Does not return an unowned venue', async () => {
+        const res = await request(app)
+        .get('/host/my-venues')
+        .set('Authorization', evilHostToken);
+
+        expect(res.status).toBe(200);
+
+        const evilVenueArray = res.body;
+
+        const evilVenueIds = evilVenueArray.map((venue: { _id: string; }) => {
+            return venue._id;
+        });
+
+        expect(evilVenueIds).not.toContain(goodVenue.id);
+    });
+
+    it('Responds to authorized request with status 200 including owned venues', async () => {
+        const res = await request(app)
+        .get('/host/my-venues')
+        .set('Authorization', goodHostToken);
+
+        expect(res.status).toBe(200);
+
+        const goodVenueArray = res.body;
+
+        const goodVenueIds = goodVenueArray.map((venue: { _id: string; }) => {
+            return venue._id;
+        });
+
+        expect(goodVenueIds).toContain(goodVenue.id);
     })
 })

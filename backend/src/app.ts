@@ -58,12 +58,12 @@ app.delete("/event", eventController.deleteEvent);
 app.get("/event/my-events", eventController.getMyEvents);
 app.post("/event", eventController.createEvent);
 
-app.get("/my-venues", venueController.getMyVenues);
 app.delete("/venue", venueController.deleteVenue);
 
 app.post("/host/ticket/scan", ticketController.scanTicket);
 app.get("/host/tickets", ticketController.getHostTickets);
 app.post("/host/tickets", ticketController.createEventTickets);
-app.post("/host/venue", venueController.createVenue)
+app.post("/host/venue", venueController.createVenue);
+app.get("/host/my-venues", venueController.getMyVenues);
 
 export default app;
