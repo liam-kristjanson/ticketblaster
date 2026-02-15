@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Card, Modal } from "react-bootstrap";
+import { Badge, Button, Card, Container, Modal, Row } from "react-bootstrap";
 import QRCode from "react-qr-code";
 import { Link } from "react-router";
 import type { Ticket } from "types";
@@ -18,7 +18,7 @@ export default function TicketCard({ticket} : TicketCardProps) {
 
             <Card.Body>
                 <Card.Title>
-                    {ticket.event?.title ?? "Unknown"}
+                    Ticket for {ticket.event?.title ?? "Unknown"}
                 </Card.Title>
 
                 <Card.Text>
@@ -29,6 +29,18 @@ export default function TicketCard({ticket} : TicketCardProps) {
                     <p>
                         Time: {new Date(ticket.event.startTime).toLocaleTimeString() ?? "Unknown"}
                     </p>
+
+                    <p>
+                        {ticket.isScanned ? (
+                            <>
+                                <Badge bg={"warning"}>Scanned in</Badge>
+                            </>
+                        ) : (
+                            <>
+                                <Badge bg={"success"}>Unused</Badge>
+                            </>
+                        )}
+                    </p>
                     
                 </Card.Text>
 
@@ -38,16 +50,36 @@ export default function TicketCard({ticket} : TicketCardProps) {
 
             <Modal show={showTicketModal} onHide={() => {setShowTicketModal(false)}}>
                 <Modal.Header closeButton>
-                    <Modal.Title>
+                    <Modal.Title className="text-primary">
                         Ticket for {ticket.event.title}
                     </Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-                    <QRCode value={ticket._id}/>
+                    <Container>
 
-                    <br/>
-                    {ticket.event.eventLocation}
+                        <Row className="mb-3">
+                            <QRCode value={ticket._id}/>
+                        </Row>
+
+                        <Row>
+                            <p>
+                                Ticket id: {ticket._id}
+                            </p>
+
+                            <p>
+                                Event date: {new Date(ticket.event.startTime).toLocaleDateString()}
+                            </p>
+
+                            <p>
+                                Price: {ticket.price}
+                            </p>
+
+                            {ticket.purchaseTime && <p>Purchased by {ticket.owner?.username ?? "Unknown"} on {new Date(ticket.purchaseTime).toLocaleString()}</p>}
+
+                            {ticket.isScanned && <p className="text-danger">This ticket has already been scanned.</p>}
+                        </Row>
+                    </Container>
                 </Modal.Body>
             </Modal>
         </Card>

@@ -5,6 +5,8 @@ export interface Ticket {
     event: TicketEvent;
     status: TicketStatus;
     price?: string;
+    owner?: User;
+    purchaseTime?: Date;
 }
 
 export interface TicketEvent {
