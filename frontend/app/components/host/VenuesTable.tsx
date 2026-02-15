@@ -24,7 +24,7 @@ export default function VenuesTable() {
     function handleDeleteVenue(venueId : string) {
         setVenuesLoading(true);
 
-        fetch(import.meta.env.VITE_SERVER + "/venue?id=" + venueId, {
+        fetch(import.meta.env.VITE_SERVER + "/host/venue?id=" + venueId, {
             method: "DELETE",
             headers: {
                 authorization: user?.authToken ?? ""

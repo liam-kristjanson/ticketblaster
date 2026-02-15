@@ -50,6 +50,7 @@ app.get("/customer/my-tickets", ticketController.getMyTickets);
 
 app.get("/admin/tickets", ticketController.getAdminTickets);
 app.post("/admin/tickets", ticketController.createEventTickets);
+app.delete("/admin/venue", venueController.adminDeleteVenue);
 
 app.delete("/ticket", ticketController.deleteTicket);
 
@@ -58,12 +59,11 @@ app.delete("/event", eventController.deleteEvent);
 app.get("/event/my-events", eventController.getMyEvents);
 app.post("/event", eventController.createEvent);
 
-app.delete("/venue", venueController.deleteVenue);
-
 app.post("/host/ticket/scan", ticketController.scanTicket);
 app.get("/host/tickets", ticketController.getHostTickets);
 app.post("/host/tickets", ticketController.createEventTickets);
 app.post("/host/venue", venueController.createVenue);
 app.get("/host/my-venues", venueController.getMyVenues);
+app.delete("/host/venue", venueController.hostDeleteVenue);
 
 export default app;

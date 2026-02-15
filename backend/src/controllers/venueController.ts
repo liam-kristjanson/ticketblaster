@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Venue from "../models/Venue";
+import { ObjectId } from "mongodb";
 
 export async function getMyVenues(req: Request, res: Response) {
 
@@ -41,20 +42,7 @@ export async function createVenue(req: Request, res: Response) {
 
 }
 
-export async function deleteVenue(req: Request, res: Response) {
-    switch (req.user?.role) {
-        case ("admin"):
-            adminDeleteVenue(req, res);
-            break;
-        case ("host"):
-            hostDeleteVenue(req, res);
-            break;
-        default:
-            res.status(401).json({error: "401: Unauthorized"});
-    }
-}
-
-async function adminDeleteVenue(req: Request, res: Response) {
+export async function adminDeleteVenue(req: Request, res: Response) {
 
     try {
         const result = await Venue.deleteOne({_id: req.query.id}).exec();
@@ -65,9 +53,14 @@ async function adminDeleteVenue(req: Request, res: Response) {
     }
 }
 
-async function hostDeleteVenue(req: Request, res: Response) {
+export async function hostDeleteVenue(req: Request, res: Response) {
     try {
         
+        if (!req.query.id || typeof req.query.id != 'string' || !ObjectId.isValid(req.query.id)) {
+            res.status(400).json({error: "Invalid venue id."});
+            return;
+        }
+
         const matchedVenue = await Venue.findById(req.query.id).exec();
 
         if (!matchedVenue) {
@@ -84,7 +77,7 @@ async function hostDeleteVenue(req: Request, res: Response) {
 
     
     } catch (err) {
-        console.error(err);
-        res.status(500).json({error: "An error occured while deleting venue"});
+        console.error("The following error occured while deleting venue with id " + req.query.venue, err);
+        res.status(500).json({error: "An error occured while deleting venue."});
     }
 }

@@ -357,3 +357,77 @@ describe('GET /host/my-venues', () => {
         expect(goodVenueIds).toContain(goodVenue.id);
     })
 })
+
+describe('DELETE /host/venue', () => {
+
+    it('Responds to unauthenticated requests with status 401', async () => {
+        const res = await request(app)
+        .delete('/host/venue');
+
+        expect(res.status).toBe(401);
+    });
+
+    it('Responds to customer requests with status 401', async () => {
+        const res = await request(app)
+        .delete('/host/venue')
+        .set('Authorization', customerToken);
+
+        expect(res.status).toBe(401);
+    });
+
+    it('Responds to request with missing id query with status 400', async () => {
+        const res = await request(app)
+        .delete('/host/venue')
+        .set('Authorization', evilHostToken);
+
+        expect(res.status).toBe(400);
+    })
+
+    it('Responds to request with invalid id query with status 400', async () => {
+        const res = await request(app)
+        .delete('/host/venue')
+        .set('Authorization', evilHostToken)
+        .query({id: "abc123"});
+
+        expect(res.status).toBe(400);
+    })
+
+    it('Responds to request to delete non-existing venue with status 404', async () => {
+        const fakeOid = new ObjectId();
+
+        const res = await request(app)
+        .delete('/host/venue')
+        .set('Authorization', evilHostToken)
+        .query({id: fakeOid.toString()});
+
+        expect(res.status).toBe(404);
+    });
+
+    it('Responds to request to delete unowned venue with status 401, and does not delete venue', async () => {
+        const venueNotToDelete = await DataFactory.createVenue(goodHost);
+
+        const res = await request(app)
+        .delete('/host/venue')
+        .set('Authorization', evilHostToken)
+        .query({id: venueNotToDelete.id});
+
+        expect(res.status).toBe(401);
+
+        const venueExists = await Venue.exists({_id: venueNotToDelete.id});
+        expect(venueExists).toBeTruthy();
+    });
+
+    it('Responds to request to delete owned venue with status 200 and deletes venue', async () => {
+        const venueToDelete = await DataFactory.createVenue(goodHost);
+
+        const res = await request(app)
+        .delete('/host/venue')
+        .set('Authorization', goodHostToken)
+        .query({id: venueToDelete.id});
+
+        expect(res.status).toBe(200);
+
+        const venueExists = await Venue.exists({_id: venueToDelete.id});
+        expect(venueExists).toBeNull();
+    })
+})
