@@ -7,8 +7,9 @@ interface Ticket extends Document {
     isScanned: boolean;
     event: Types.ObjectId;
     status: TicketStatus;
-    owner: String;
+    owner: Types.ObjectId;
     price: string;
+    purchaseTime: Date;
 }
 
 const ticketSchema = new Schema<Ticket>({
@@ -17,7 +18,8 @@ const ticketSchema = new Schema<Ticket>({
     event: {type: Schema.Types.ObjectId, required: true, ref: 'Event'},
     status: {type: String, enum: ["available", "sold", "hold"], required: true},
     owner: {type: Schema.Types.ObjectId, required: false, ref: 'User'},
-    price: {type: String, required: false} 
+    price: {type: String, required: false},
+    purchaseTime: {type: Date, required: false}
 });
 
 const Ticket = mongoose.model<Ticket>('Ticket', ticketSchema);

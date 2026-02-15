@@ -193,7 +193,8 @@ export async function purchaseTicket(req: Request, res: Response) {
     }
 
     matchedTicket.status = "sold"
-    matchedTicket.owner = req.user.id;
+    matchedTicket.owner = new ObjectId(req.user.id);
+    matchedTicket.purchaseTime = new Date(Date.now());
 
     await matchedTicket.save();
 
@@ -205,7 +206,7 @@ export async function getMyTickets(req: Request, res: Response) {
         res.status(401).json({error: "401: Unauthorized"});
     }
 
-    const matchedTickets = await Ticket.find({owner: req.user.id}).populate('event').exec();
+    const matchedTickets = await Ticket.find({owner: req.user.id}).populate('event').populate('owner').exec();
 
     res.status(200).json(matchedTickets);
 }
