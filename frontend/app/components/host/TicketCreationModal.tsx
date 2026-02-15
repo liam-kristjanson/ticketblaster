@@ -40,7 +40,7 @@ export default function TicketCreationModal({show, event, hideModal}:  TicketCre
             count: numTickets.toString()
         });
 
-        fetch(import.meta.env.VITE_SERVER + "/tickets?" + QUERY_PARAMS.toString(), {
+        fetch(import.meta.env.VITE_SERVER + "/host/tickets?" + QUERY_PARAMS.toString(), {
             method: "POST",
             headers: {
                 authorization: user?.authToken ?? ""

@@ -12,12 +12,17 @@ export async function createVenue(req: Request, res: Response) {
 
     let newVenue : Venue;
 
+    if (!req.body) {
+        res.status(400).json({error: "Missing request body"});
+        return;
+    }
+
     try {
         newVenue = new Venue({
             name: req.body.name,
             address: req.body.address,
             capacity: req.body.capacity,
-            owner: req.body.owner
+            owner: req.user?.id
         })
 
         await newVenue.save();
@@ -25,7 +30,13 @@ export async function createVenue(req: Request, res: Response) {
 
     } catch (err) {
         console.error("Error saving new venue: ", err);
-        res.status(500).json({error: "An error occured while saving the venue"});
+
+        if (err.name == 'ValidationError') {
+            res.status(400).json({error: "Malformed request body."});
+            return;
+        }
+
+        res.status(500).json({error: "An error occured while saving the venue."});
     }
 
 }

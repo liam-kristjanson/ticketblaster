@@ -257,4 +257,54 @@ describe('POST /host/tickets', () => {
 
         expect(res.status).toBe(200);
     })
+});
+
+describe('POST /host/venue', () => {
+    it('Responds to unauthenticated requests with status 401', async () => {
+        const res = await request(app)
+        .post('/host/venue');
+
+        expect(res.status).toBe(401);
+    });
+
+    it('Responds to customer requests with status 401', async () => {
+        const res = await request(app)
+        .post('/host/venue')
+        .set('Authorization', customerToken);
+
+        expect(res.status).toBe(401);
+    });
+
+    it('Responds to requests without body with status 400', async () => {
+        const res = await request(app)
+        .post('/host/venue')
+        .set('Authorization', evilHostToken)
+
+        expect(res.status).toBe(400);
+    })
+
+    it('Responds to requests with malformed request body with status 400', async () => {
+        const res = await request(app)
+        .post('/host/venue')
+        .set('Authorization', evilHostToken)
+        .send({
+            asdf: "WWOOOOEOESLAL",
+            name: "EVIL HOST :)"
+        })
+
+        expect(res.status).toBe(400);
+    });
+
+    it('Responds to authorized request with status 200', async () => {
+        const res = await request(app)
+        .post('/host/venue')
+        .set('Authorization', goodHostToken)
+        .send({
+            name: "New venue",
+            address: "123 Fake Street",
+            capacity: 100
+        })
+
+        expect(res.status).toBe(200);
+    })
 })

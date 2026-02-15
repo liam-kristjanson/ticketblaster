@@ -49,9 +49,8 @@ app.post("/customer/purchase-ticket", ticketController.purchaseTicket);
 app.get("/customer/my-tickets", ticketController.getMyTickets);
 
 app.get("/admin/tickets", ticketController.getAdminTickets);
+app.post("/admin/tickets", ticketController.createEventTickets);
 
-
-app.post("/tickets", ticketController.createEventTickets);
 app.delete("/ticket", ticketController.deleteTicket);
 
 app.get("/event/all", eventController.getEvents);
@@ -60,11 +59,11 @@ app.get("/event/my-events", eventController.getMyEvents);
 app.post("/event", eventController.createEvent);
 
 app.get("/my-venues", venueController.getMyVenues);
-app.post("/venue", venueController.createVenue);
 app.delete("/venue", venueController.deleteVenue);
 
 app.post("/host/ticket/scan", ticketController.scanTicket);
 app.get("/host/tickets", ticketController.getHostTickets);
 app.post("/host/tickets", ticketController.createEventTickets);
+app.post("/host/venue", venueController.createVenue)
 
 export default app;

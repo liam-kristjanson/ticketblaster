@@ -25,7 +25,7 @@ export default function Event() {
 
         const params = new URLSearchParams({eventId: event._id, count: numTickets.toString()})
 
-        fetch(import.meta.env.VITE_SERVER + "/tickets?" + params.toString(), {
+        fetch(import.meta.env.VITE_SERVER + "/admin/tickets?" + params.toString(), {
             method: "POST",
             headers: {
                 Authorization: user?.authToken ?? ""
@@ -59,7 +59,7 @@ export default function Event() {
 
                 <p>Title: {event.title}</p>
                 <p>Start Time: {new Date(event.startTime).toLocaleString()}</p>
-                <p>Location: {event.venue}</p>
+                <p>Location: {event.venue.name}</p>
                 
                 <Button onClick={() => {setShowModal(true)}}>Create Tickets</Button>
 

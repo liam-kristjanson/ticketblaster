@@ -53,7 +53,7 @@ export default function VenuesTable() {
             owner: user?.id ?? ""
         }
 
-        fetch(import.meta.env.VITE_SERVER + "/venue", {
+        fetch(import.meta.env.VITE_SERVER + "/host/venue", {
             method: "POST",
             headers: {
                 "content-type": "application/json",
@@ -83,7 +83,7 @@ export default function VenuesTable() {
     useEffect(() => {
         setVenuesLoading(true);
         setVenuesResponse(['', 'info']);
-        fetch(import.meta.env.VITE_SERVER + "/my-venues", {
+        fetch(import.meta.env.VITE_SERVER + "/host/my-venues", {
             method: "GET",
             headers: {
                 Authorization: user?.authToken ?? ""

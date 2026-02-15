@@ -26,7 +26,7 @@ export default function CreateEvent() {
     //FETCH AVAILABLE VENUES
     useEffect(() => {
         setIsVenuesLoading(true);
-        fetch(import.meta.env.VITE_SERVER + "/my-venues", {
+        fetch(import.meta.env.VITE_SERVER + "/host/my-venues", {
             headers: {
                 authorization: user?.authToken ?? ""
             }
