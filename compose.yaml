@@ -47,9 +47,17 @@ services:
       - backend
     networks:
       - ticketblaster-net
+
+  storage:
+    build: ./storage
+    volumes:
+      - storage-data:/app/storage
+    networks:
+      - ticketblaster-net
     
 volumes:
   mongo-data:
+  storage-data:
 
 networks:
   ticketblaster-net:
