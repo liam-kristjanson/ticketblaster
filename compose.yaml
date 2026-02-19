@@ -21,6 +21,7 @@ services:
       - DB_CONNECTION_STRING=mongodb://database:27017/
       - JWT_SECRET=secret
       - FRONT_ORIGIN=http://frontend
+      - STORAGE_CONNECTION_STRING=http://storage:3000
     develop:
       watch:
         - path: ./backend

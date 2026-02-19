@@ -2,6 +2,7 @@ import express from 'express';
 
 import cors from "cors";
 import bodyParser = require('body-parser');
+import multer from "multer";
 
 import * as ticketController from './controllers/ticketController';
 import * as eventController from './controllers/eventController';
@@ -26,6 +27,7 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.json());
 
+const upload = multer({storage: multer.memoryStorage()})
 
 /////////////////////////
 //UNAUTHENTICATED ROUTES
@@ -65,5 +67,6 @@ app.post("/host/tickets", ticketController.createEventTickets);
 app.post("/host/venue", venueController.createVenue);
 app.get("/host/my-venues", venueController.getMyVenues);
 app.delete("/host/venue", venueController.hostDeleteVenue);
+app.post("/host/venue/update", venueController.hostUpdateVenue)
 
 export default app;

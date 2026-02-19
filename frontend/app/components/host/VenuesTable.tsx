@@ -3,6 +3,7 @@ import { Button, Form, Modal, Spinner, Table } from "react-bootstrap";
 import { AuthContext } from "~/context/authContext";
 import {type ServerMessage, type Venue } from "types";
 import ServerResponseContainer from "../ServerResopnseContainer";
+import EditVenueModal from "./EditVenueModal";
 
 export default function VenuesTable() {
 
@@ -19,6 +20,9 @@ export default function VenuesTable() {
     const [newVenueCapacity, setNewVenueCapacity] = useState<number>(0);
     const [newVenueLoading, setNewVenueLoading] = useState<boolean>(false);
     const [newVenueResponse, setNewVenueResponse] = useState<ServerMessage>(['', 'info']);
+
+    const [showDetailsModal, setShowDetailsModal] = useState<boolean>(false);
+    const [selectedVenue, setSelectedVenue] = useState<Venue | undefined>(undefined);
 
 
     function handleDeleteVenue(venueId : string) {
@@ -131,7 +135,7 @@ export default function VenuesTable() {
                             <td>{venue.address}</td>
                             <td>{venue.capacity}</td>
                             <td>{venue._id}</td>
-                            <td><Button variant="secondary" className="me-1">Show details</Button><Button onClick={() => {handleDeleteVenue(venue._id)}}variant="danger">Delete</Button></td>
+                            <td><Button variant="secondary" className="me-1" onClick={() => {setShowDetailsModal(true); setSelectedVenue(venue)}}>Show details</Button><Button onClick={() => {handleDeleteVenue(venue._id)}}variant="danger">Delete</Button></td>
                         </tr>
                     ))
                 )}
@@ -184,5 +188,7 @@ export default function VenuesTable() {
                 
             </Modal.Footer>
         </Modal>
+
+        {selectedVenue && <EditVenueModal show={showDetailsModal} venue={selectedVenue} onHide={() => {setShowDetailsModal(false); setTableRefreshCounter(tableRefreshCounter + 1)}}/>}
     </>
 }
