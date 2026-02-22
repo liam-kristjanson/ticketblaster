@@ -18,21 +18,20 @@ app.get("/", (req, res) => {
 
 app.post("/upload", (req, res) => {
 
-    console.log("REQUEST HEADERS: ", req.headers)
+    if (!req.header("Ticketblaster-Filename")) {
+        res.status(400).json({error: "Missing filename header"});
+    }
 
-    const originalName = req.header("Ticketblaster-Filename") || randomUUID();
-    const extension = path.extname(originalName);
+    const fileName = req.header("Ticketblaster-Filename");
 
-    const filePath = __dirname + "/storage/" + originalName;
+    const filePath = __dirname + "/storage/" + fileName;
 
     const writeStream = fs.createWriteStream(filePath);
 
     req.pipe(writeStream);
 
     writeStream.on("finish", () => {
-        res.json({
-            fileName: originalName + extension,
-        });
+        res.status(201).json({fileName});
     })
 
     writeStream.on("error", (err) => {

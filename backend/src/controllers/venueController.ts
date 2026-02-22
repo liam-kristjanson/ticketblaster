@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import Venue from "../models/Venue";
 import { ObjectId } from "mongodb";
 import User from "../models/User";
@@ -99,9 +99,12 @@ export async function hostUpdateVenue(req: Request, res: Response) {
     }
 
     const bb = busboy({headers: req.headers});
+    let fileUploadPromise: Promise<globalThis.Response>;
+    let isFileSubmitted = false;
 
     bb.on('file', (name, fileStream, info) => {
-        const {filename, encoding, mimeType} = info;       
+
+        const {filename, encoding, mimeType} = info;      
 
         console.log(
         `File [${name}]: filename: %j, encoding: %j, mimeType: %j`,
@@ -110,10 +113,24 @@ export async function hostUpdateVenue(req: Request, res: Response) {
         mimeType
       );
 
+      if (!filename) {
+        console.log("Detected file submitted without filename. Resuming stream.");
+        fileStream.resume()
+        return;
+      }
+
       const fileExtension = "." + filename.split('.').pop();
 
+      if (![".png", ".jpg", ".jpeg"].includes(fileExtension)) {
+        console.log("Invalid extension detected for file. Recieved " + fileExtension + " rejecting request." );
+        res.status(400).json({error: "Invalid filetype. Please submit a file in .png, .jpg, or .jpeg"});
+        res.end();
+        return;
+      }
+
       console.log("Uploading file to storage...");
-      fetch(process.env.STORAGE_CONNECTION_STRING + "/upload", {
+
+      fileUploadPromise = fetch(process.env.STORAGE_CONNECTION_STRING + "/upload", {
         method: "POST",
         headers: {
             "Content-Type": mimeType,
@@ -122,34 +139,66 @@ export async function hostUpdateVenue(req: Request, res: Response) {
         duplex: 'half',
         body: fileStream
       } as any) //bypass type check to allow file stream and duplex to be defined in the fetch.
-      .then(fileUploadResponse => {
-        fileUploadResponse.json().then(responseJson => {
-            if (fileUploadResponse.ok) {
-                res.json({message: "File uploaded"});
-                console.log("File uploaded");
-                return;
-            } else {
-                res.status(500).json({error: "500: An error occured while uploading file"});
-                console.error("An error occured while uploading file")
-                return;
-            }
-        })
-        .catch(err => {
-            res.status(500).json({error: "500: An unexpected error occured while uploading file"});
-        })
-      })
+
+      isFileSubmitted = true;
     })
 
-    //TODO: Use these to update the text fields of the venue
     bb.on('field', (name, val, info) => {
-      console.log(`Field [${name}]: value: %j`, val);
+        console.log(`Field [${name}]: value: %j`, val);
+
+        //map fields onto matched venue document.
+        switch (name) {
+            case "capacity":
+                if (!isNaN(parseInt(val))) {
+                    matchedVenue.capacity = parseInt(val);
+                }
+                break;
+            case "name":
+                matchedVenue.name = val;
+                break;
+            case "address":
+                matchedVenue.address = val;
+                break;
+        }
     });
 
-    bb.on('close', () => {
+    bb.on('close', async () => {
       console.log('Done parsing form!');
-      res.writeHead(303, { Connection: 'close', Location: '/' });
-      res.end();
+      //res.writeHead(303, { Connection: 'close', Location: '/' });
+      //res.end();
+
+      try {
+        if (isFileSubmitted) {
+            let fileUploadResponse = await fileUploadPromise;
+
+            if (fileUploadResponse.ok) {
+                let fileUploadJson = await fileUploadResponse.json();
+                console.log("Recieved OK response from storage service: ", fileUploadJson);
+                
+                if (fileUploadJson.fileName) {
+                    matchedVenue.image = fileUploadJson.fileName;
+                    await matchedVenue.save();
+                    res.status(200).json({message: "Venue updated successfuly.", venue: matchedVenue});
+                } else {
+                    throw new Error("Did not recieve filename from storage service despite OK response.");
+                }
+            } else {
+                throw new Error("Recieved non-OK response from storage service in response to venue image upload");
+            }
+        } else {
+            await matchedVenue.save();
+            res.status(200).json({message: "Venue updated successfuly.", venue: matchedVenue})
+        }
+      } catch (err) {
+        console.error(err);
+        res.status(500).json({error: "500: Internal server error"});
+      }
     });
+
+    bb.on('error', (err) => {
+        console.error(err);
+        res.status(500).json({error: "500: Internal server error (bb)"});
+    })
 
     req.pipe(bb);
 }
