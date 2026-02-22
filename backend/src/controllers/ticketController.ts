@@ -132,6 +132,7 @@ export async function createEventTickets(req: Request, res: Response) {
                 isScanned: false,
                 status: "available",
                 price: "$1",
+                image: matchedEvent.image
             }));
         }
 

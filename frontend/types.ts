@@ -7,6 +7,7 @@ export interface Ticket {
     price?: string;
     owner?: User;
     purchaseTime?: Date;
+    image?: string;
 }
 
 export interface TicketEvent {
@@ -14,6 +15,7 @@ export interface TicketEvent {
     title: string;
     venue: Venue;
     startTime: Date;
+    image?: string;
 }
 
 export type MessageType = "success" | "danger" | "info";

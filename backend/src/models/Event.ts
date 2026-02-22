@@ -6,13 +6,15 @@ interface Event extends Document {
     startTime: Date;
     owner: ObjectId;
     venue: ObjectId;
+    image?: string;
 }
 
 const eventSchema = new Schema<Event>({
     title: {type: String, required: true},
     startTime: {type: Date, required: true},
     venue: {type: Schema.Types.ObjectId, required: true, ref:"Venue"},
-    owner: {type: Schema.Types.ObjectId, required: true, ref:"User"}
+    owner: {type: Schema.Types.ObjectId, required: true, ref:"User"},
+    image: {type: String, required: false}
 });
 
 const Event = mongoose.model<Event>('Event', eventSchema)

@@ -2,6 +2,8 @@ import { Request, Response } from "express"
 import Event from "../models/Event";
 import { ObjectId } from "mongodb";
 import Ticket from "../models/Ticket";
+import Venue from "../models/Venue";
+import User from "../models/User";
 
 export async function createEvent(req: Request, res: Response) {
 
@@ -14,9 +16,15 @@ export async function createEvent(req: Request, res: Response) {
         return;
     }
 
-    if (!req.body.title || !req.body.venue || !req.body.startTime) {
+    if (!req.body.title || !ObjectId.isValid(req.body.venue) || !req.body.startTime) {
         res.status(400).json({error: "Malformed request body"});
         return;
+    }
+
+    const matchedVenue = await Venue.findById(req.body.venue).populate<{owner: User}>('owner');
+
+    if (!matchedVenue || matchedVenue.owner.id != req.user?.id) {
+        res.status(400).json({error: "Invalid venue id"});
     }
 
     try {
@@ -32,8 +40,11 @@ export async function createEvent(req: Request, res: Response) {
         }
 
         const newEvent = new Event({title, venue, startTime, owner})
+        if (matchedVenue.image) {
+            newEvent.image = matchedVenue.image;
+        }
         await newEvent.save();
-        res.status(200).json({message: "Event created successfuly"});
+        res.status(201).json({message: "Event created successfuly"});
         return;
     } catch (err) {
         console.error("The following error occured while saving new event to database:", err);

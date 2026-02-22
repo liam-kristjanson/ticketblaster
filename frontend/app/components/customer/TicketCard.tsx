@@ -14,7 +14,7 @@ export default function TicketCard({ticket} : TicketCardProps) {
 
     return (
         <Card className="w-100">
-            <Card.Img variant="top" src="/sample-concert.jpg" className="w-100"/>
+            <Card.Img variant="top" src={ticket.image ? "/storage/file/" + ticket.image : "/sample-concert.jpg"} className="w-100"/>
 
             <Card.Body>
                 <Card.Title>

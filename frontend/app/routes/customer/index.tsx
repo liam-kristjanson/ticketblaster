@@ -130,7 +130,7 @@ export default function CustomerIndex() {
 
                     {events.map(event => (
                         <Carousel.Item key={event._id}>
-                            <Image src="/sample-concert-2to1.jpg" fluid/>
+                            <Image className="w-100" src={event.image ? "/storage/file/" + event.image : "/sample-concert-2to1.jpg"} fluid/>
                             <Carousel.Caption>
                                 <a className="hover-pointer" onClick={() => {navigate("event", {state:{event}})}}><h1 className="text-decoration-underline text-light">{event.title}</h1></a>
                                 <p>This is the description for the event</p> 

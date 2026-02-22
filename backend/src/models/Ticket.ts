@@ -10,6 +10,7 @@ interface Ticket extends Document {
     owner: Types.ObjectId;
     price: string;
     purchaseTime: Date;
+    image?: string;
 }
 
 const ticketSchema = new Schema<Ticket>({
@@ -19,7 +20,8 @@ const ticketSchema = new Schema<Ticket>({
     status: {type: String, enum: ["available", "sold", "hold"], required: true},
     owner: {type: Schema.Types.ObjectId, required: false, ref: 'User'},
     price: {type: String, required: false},
-    purchaseTime: {type: Date, required: false}
+    purchaseTime: {type: Date, required: false},
+    image: {type: String, required: false}
 });
 
 const Ticket = mongoose.model<Ticket>('Ticket', ticketSchema);
