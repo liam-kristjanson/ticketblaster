@@ -84,6 +84,7 @@ export async function hostDeleteVenue(req: Request, res: Response) {
     }
 }
 
+//TODO: split this into one route to update text fields, another for image.
 export async function hostUpdateVenue(req: Request, res: Response) {
 
     if (!req.query.id || typeof req.query.id != "string" || !ObjectId.isValid(req.query.id)) {

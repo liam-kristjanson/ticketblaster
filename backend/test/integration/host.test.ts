@@ -429,5 +429,104 @@ describe('DELETE /host/venue', () => {
 
         const venueExists = await Venue.exists({_id: venueToDelete.id});
         expect(venueExists).toBeNull();
+    });
+})
+
+describe('POST /host/venue/update', () => {
+
+    const ROUTE = '/host/venue/update'
+
+    it('Responds to unauthenticated requests with status 401', async () => {
+        const res = await request(app)
+        .post(ROUTE)
+
+        expect(res.status).toBe(401);
+    })
+
+    it('Responds to requests without id query parameter with status 400', async () => {
+        const res = await request(app)
+        .post(ROUTE)
+        .set('Authorization', evilHostToken)
+        
+        expect(res.status).toBe(400);
+    })
+
+    it('Responds to request with invalid id query parameter with status 400', async () => {
+        const res = await request(app)
+        .post(ROUTE)
+        .set('Authorization', evilHostToken)
+        .query({id: "abc123"});
+
+        expect(res.status).toBe(400);
+    })
+
+    it('Responds to request on unowned venue with status 400', async () => {
+        const res = await request(app)
+        .post(ROUTE)
+        .set('Authorization', evilHostToken)
+        .query({id: goodVenue.id})
+
+        expect(res.status).toBe(400);
+    })
+
+    it('Responds to request on non-existing venue with status 400', async () => {
+        const fakeOid = new ObjectId();
+
+        const res = await request(app)
+        .post(ROUTE)
+        .set('Authorization', evilHostToken)
+        .query({id: fakeOid});
+
+        expect(res.status).toBe(400);
+    })
+
+    it('Does not allow venue capacity to be changed to a NaN value', async () => {
+        const ORIGINAL_CAPACITY = 100
+        const venueToModify = await DataFactory.createVenue(evilHost, {capacity: ORIGINAL_CAPACITY});
+
+        const res = await request(app)
+        .post(ROUTE)
+        .set('Authorization', evilHostToken)
+        .query({id: venueToModify.id})
+        .field('capacity', 'abc');
+
+        expect(res.status).toBe(200);
+
+        const resultingVenue = await Venue.findById(venueToModify.id);
+        expect(resultingVenue.capacity).toBe(ORIGINAL_CAPACITY);
+    });
+    
+    it('Allows authorized user to update name, address, and capacity of an owned venue', async () => {
+        const ORIGINAL_NAME = "Original Venue Name";
+        const ORIGINAL_CAPACITY = 100;
+        const ORIGINAL_ADDRESS = "123 First Street";
+
+        const NEW_NAME = "New Venue Name";
+        const NEW_CAPACITY = 200;
+        const NEW_ADDRESS = "123 New Street";
+
+        const venueToModify = await DataFactory.createVenue(goodHost, {
+            name: ORIGINAL_NAME,
+            capacity: ORIGINAL_CAPACITY,
+            address: ORIGINAL_ADDRESS
+        });
+
+        const res = await request(app)
+        .post(ROUTE)
+        .set('Authorization', goodHostToken)
+        .query({id: venueToModify.id})
+        .field({
+            "name": NEW_NAME,
+            "capacity": NEW_CAPACITY,
+            "address": NEW_ADDRESS
+        });
+
+        expect(res.status).toBe(200);
+
+        const resultingVenue = await Venue.findById(venueToModify.id);
+
+        expect(resultingVenue.name).toBe(NEW_NAME);
+        expect(resultingVenue.address).toBe(NEW_ADDRESS);
+        expect(resultingVenue.capacity).toBe(NEW_CAPACITY);
     })
 })
