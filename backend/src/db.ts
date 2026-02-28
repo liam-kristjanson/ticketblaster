@@ -1,4 +1,9 @@
 import mongoose from 'mongoose';
+import { createClient } from 'redis';
+
+export const redisClient = createClient({
+  url: 'redis://cache:6379'
+});
 
 export async function connect(connectionString : string) {
   console.log("Connecting to MongoDB...");
@@ -9,4 +14,10 @@ export async function connect(connectionString : string) {
     console.error("Error connecting to db:", err);
     throw err;
   }
+}
+
+export async function connectRedis() {
+  console.log("Connecting to redis...")
+  await redisClient.connect();
+  console.log("Redis connected!");
 }

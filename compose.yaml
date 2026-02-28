@@ -28,6 +28,7 @@ services:
           action: rebuild
     depends_on:
       - database
+      - cache
     networks:
       - ticketblaster-net
   
@@ -46,6 +47,7 @@ services:
     depends_on:
       - frontend
       - backend
+      - storage
     networks:
       - ticketblaster-net
 
@@ -55,7 +57,13 @@ services:
       - storage-data:/app/storage
     networks:
       - ticketblaster-net
-    
+
+  cache:
+    image: redis:alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - ticketblaster-net
+
 volumes:
   mongo-data:
   storage-data:
