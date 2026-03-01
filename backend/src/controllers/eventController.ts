@@ -55,7 +55,7 @@ export async function createEvent(req: Request, res: Response) {
 }
 
 export async function getEvents(req: Request, res: Response) {
-    const events = await Event.find();
+    const events = await Event.find().populate('venue');
 
     res.json(events);
 }

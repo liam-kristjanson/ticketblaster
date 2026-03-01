@@ -49,6 +49,7 @@ app.use("/host/", authMiddleware.verifyHostStatus);
 app.get("/customer/tickets", ticketController.getCustomerTickets);
 app.post("/customer/purchase-ticket", ticketController.purchaseTicket);
 app.get("/customer/my-tickets", ticketController.getMyTickets);
+app.get("/customer/hold-ticket", ticketController.holdTicket);
 
 app.get("/admin/tickets", ticketController.getAdminTickets);
 app.post("/admin/tickets", ticketController.createEventTickets);

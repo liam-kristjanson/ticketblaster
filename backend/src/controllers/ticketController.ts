@@ -211,3 +211,27 @@ export async function getMyTickets(req: Request, res: Response) {
 
     res.status(200).json(matchedTickets);
 }
+
+export async function holdTicket(req: Request, res: Response) {
+    if (!req.query.id || typeof req.query.id != "string" || !ObjectId.isValid(req.query.id)) {
+        res.status(400).json({error: "Invalid id"});
+        return;
+    }
+
+    const matchedTicket = await Ticket.findById(req.query.id);
+
+    if (!matchedTicket) {
+        res.status(404).json({error: "Ticket with requested id not found"});
+        return;
+    }
+
+    if (matchedTicket.status != "available") {
+        res.status(403).json({error: "Ticket is not available"});
+        return;
+    }
+
+    matchedTicket.status = "hold";
+    await matchedTicket.save();
+
+    res.status(200).json({message: "Ticket placed on hold", ticket: matchedTicket});
+}
