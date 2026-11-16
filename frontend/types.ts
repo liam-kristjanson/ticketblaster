@@ -35,6 +35,7 @@ export interface Venue {
     address: string;
     capacity: number;
     owner?: User;
+    image?: string;
     _id: string;
 }
 

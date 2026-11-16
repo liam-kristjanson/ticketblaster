@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, Container, Modal, Spinner, Table } from "react-bootstrap";
-import { Navigate, useLocation, useNavigate } from "react-router"
+import { Button, Container, Image, Modal, Spinner, Table } from "react-bootstrap";
+import { Link, Navigate, useLocation, useNavigate } from "react-router"
 import type { ServerMessage, Ticket, TicketEvent } from "types";
 import ServerResponseContainer from "~/components/ServerResopnseContainer";
 import { AuthContext } from "~/context/authContext";
@@ -86,8 +86,39 @@ export default function EventDashboard() {
     }, [user])
 
     return <>
+
+        
+
         <Container>
+
+            <Link to="/host">Back to dashboard</Link>
+
             <h1>Event Dashboard : {event.title}</h1>
+            <hr/>
+
+            <h3>Statistics</h3>
+            {/* TODO: Calculate this on backend instead */}
+            <p>Tickets sold/available: {tickets.filter(ticket => {return ticket.status == "sold"}).length} / {tickets.length}</p>
+
+            <p>Scanned attendance: {tickets.filter(ticket => {return ticket.isScanned}).length}</p>
+
+            <p>Venue capacity: {event.venue.capacity}</p>
+            <hr/>
+
+            <h3>Venue</h3>
+
+            <p>
+                Name: {event.venue.name}
+            </p>
+
+            <p>
+                Address: {event.venue.address}
+            </p>
+
+            <p>
+                Capacity: {event.venue.capacity}
+            </p>
+            <hr/>
 
             <h3>Tickets:</h3>
             <Table striped bordered hover>
