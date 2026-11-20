@@ -48,6 +48,7 @@ services:
       - frontend
       - backend
       - storage
+      - garage
     networks:
       - ticketblaster-net
 
@@ -68,8 +69,8 @@ services:
   garage:
     image: dxflrs/garage:v2.5.0
     environment:
-      GARAGE_DEFAULT_ACCESS_KEY: "ff0285a79cdd045a97727742f874a0b5"
-      GARAGE_DEFAULT_SECRET_KEY: "ebcb1d52e16a48c823ab49c512cdde58"
+      GARAGE_DEFAULT_ACCESS_KEY: "${GARAGE_ACCESS_KEY}"
+      GARAGE_DEFAULT_SECRET_KEY: "${GARAGE_SECRET_KEY}"
       GARAGE_DEFAULT_BUCKET: "default-bucket"
 
     command: ["/garage", "server", "--single-node", "--default-bucket"]
@@ -78,6 +79,9 @@ services:
       - ./garage/garage.toml:/etc/garage.toml:ro
       - ./garage/meta:/var/lib/garage/meta
       - ./garage/data:/var/lib/garage/data
+
+    networks:
+      - ticketblaster-net
 
 volumes:
   mongo-data:
